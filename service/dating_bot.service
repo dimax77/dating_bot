@@ -1,0 +1,12 @@
+[Unit]
+Description=Dating Bot Web App
+After=network.target
+
+[Service]
+ExecStart=/usr/local/bin/docker-compose -f /home/user/dating_bot/docker-compose.yml up
+WorkingDirectory=/home/user/dating_bot
+Restart=always
+User=user
+
+[Install]
+WantedBy=multi-user.target
