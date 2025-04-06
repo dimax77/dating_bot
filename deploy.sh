@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 # Настройки сервера и домена
 SERVER="mockingb@95.164.62.113"
 DIR="/home/mockingb/dating_bot"
