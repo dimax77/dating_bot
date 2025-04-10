@@ -23,6 +23,9 @@ ssh -t $SERVER << EOF
   echo "🐳 Обновляем Docker Compose (правка пути к Dockerfile, если нужно)..."
   sed -i 's|build: ./app|build:\n      context: .\n      dockerfile: Dockerfile|' docker-compose.yml
 
+  cd flask-test
+  docker compose up --build
+
 
 
   echo "✅ Готово! Приложение доступно по адресу: https://$DOMAIN"
