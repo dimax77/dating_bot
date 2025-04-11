@@ -15,7 +15,10 @@ ssh -t $SERVER << EOF
   if [ ! -d "$DIR" ]; then
     git clone git@github.com:dimax77/dating_bot.git $DIR
   else
-    cd $DIR && git pull
+    cd $DIR
+    git pull
+    git checkout initial_setup
+    cd flask_test
   fi
 
   cd $DIR
@@ -23,7 +26,6 @@ ssh -t $SERVER << EOF
   echo "🐳 Обновляем Docker Compose (правка пути к Dockerfile, если нужно)..."
   sed -i 's|build: ./app|build:\n      context: .\n      dockerfile: Dockerfile|' docker-compose.yml
 
-  cd flask-test
   docker compose up --build
 
 
