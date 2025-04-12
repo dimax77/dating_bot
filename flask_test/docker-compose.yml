@@ -6,12 +6,12 @@ services:
 
   nginx:
     image: nginx:latest
-    container_name: dating_nginx
+    container_name: dating_nginx_test
     ports:
       - "80:80"
       - "8443:8443"
     volumes:
-      - ./nginx/conf.d:/etc/nginx/conf.d
+      - ./nginx/conf.d:/etc/nginx/conf.d:ro
       - /etc/letsencrypt:/etc/letsencrypt:ro
     depends_on:
       - flask
