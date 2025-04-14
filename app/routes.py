@@ -1,6 +1,7 @@
 from flask import Blueprint, render_template, request, redirect, url_for
 
 main = Blueprint('main', __name__)
+UPLOAD_FOLDER = 'static/uploads'
 
 @main.route('/')
 def index():
@@ -38,8 +39,6 @@ from flask import Blueprint, render_template, request, redirect, url_for
 import os
 from werkzeug.utils import secure_filename
 
-main = Blueprint('main', __name__)
-UPLOAD_FOLDER = 'static/uploads'
 
 # @main.route('/create_profile', methods=['GET', 'POST'])
 # def create_profile():
