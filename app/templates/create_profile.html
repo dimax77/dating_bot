@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html>
 <head><title>Создание анкеты</title></head>
 <body>
@@ -12,4 +12,74 @@
   <button type="submit">Сохранить</button>
 </form>
 </body>
+</html> -->
+
+<!-- templates/create_profile.html -->
+
+<!-- <!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Создание анкеты</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <div class="container">
+    <h2>Создание анкеты</h2>
+    <form action="/create_profile" method="post" enctype="multipart/form-data">
+      <label>Имя: <input type="text" name="name" required></label><br>
+      <label>Возраст: <input type="number" name="age" required></label><br>
+      <label>Город: <input type="text" name="city" required></label><br>
+      <label>Интересы: <input type="text" name="interests"></label><br>
+      <label>Описание:<br>
+        <textarea name="about" rows="4"></textarea>
+      </label><br>
+      <label>Аватарка: <input type="file" name="photo"></label><br><br>
+      <button type="submit">Сохранить</button>
+    </form>
+  </div>
+</body>
+</html> -->
+
+
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Создание анкеты</title>
+  <link rel="stylesheet" href="/static/style.css" />
+</head>
+
+<body>
+  <div class="container">
+    <h2>Создание анкеты</h2>
+    <form action="/create_profile" method="post" enctype="multipart/form-data">
+      <label>Имя:
+        <input type="text" name="name" required />
+      </label>
+      <label>Возраст:
+        <input type="number" name="age" min="18" max="99" required />
+      </label>
+      <label>Город:
+        <input type="text" name="city" required />
+      </label>
+      <label>Интересы:
+        <input type="text" name="interests" placeholder="Музыка, спорт, кино..." />
+      </label>
+      <label>Описание:
+        <textarea name="about" rows="4" placeholder="Расскажи немного о себе..."></textarea>
+      </label>
+      <label>Аватарка:
+        <input type="file" name="photo" accept="image/*" />
+      </label>
+      <button type="submit">Сохранить анкету</button>
+    </form>
+  </div>
+</body>
+
 </html>
+
+
