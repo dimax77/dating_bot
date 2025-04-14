@@ -10,7 +10,7 @@ from werkzeug.utils import secure_filename
 
 
 DB_PATH = 'data/profiles.db'
-UPLOAD_FOLDER = 'app/static/uploads'
+# UPLOAD_FOLDER = 'app/static/uploads'
 
 
 main = Blueprint('main', __name__)
