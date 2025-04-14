@@ -1,4 +1,17 @@
+# app/routes.py
+
 from flask import Blueprint, render_template, request, redirect, url_for
+from flask import Blueprint, render_template, request, redirect, url_for
+import os
+import sqlite3
+
+from werkzeug.utils import secure_filename
+
+
+
+DB_PATH = 'data/profiles.db'
+UPLOAD_FOLDER = 'app/static/uploads'
+
 
 main = Blueprint('main', __name__)
 UPLOAD_FOLDER = 'static/uploads'
@@ -7,15 +20,6 @@ UPLOAD_FOLDER = 'static/uploads'
 def index():
     return render_template('index.html')
 
-
-
-
-# @main.route('/create_profile', methods=['GET', 'POST'])
-# def create_profile():
-#     if request.method == 'POST':
-#         # Обработка формы создания профиля
-#         pass
-#     return render_template('create_profile.html')
 
 @main.route('/search', methods=['GET', 'POST'])
 def search():
@@ -34,40 +38,6 @@ def dialog(user_id):
     # Показать диалог с пользователем
     return render_template('dialog.html', user_id=user_id)
 
-# app/routes.py
-from flask import Blueprint, render_template, request, redirect, url_for
-import os
-from werkzeug.utils import secure_filename
-
-
-# @main.route('/create_profile', methods=['GET', 'POST'])
-# def create_profile():
-#     if request.method == 'POST':
-#         name = request.form['name']
-#         age = request.form['age']
-#         city = request.form['city']
-#         interests = request.form['interests']
-#         about = request.form['about']
-#         photo = request.files.get('photo')
-
-#         photo_path = None
-#         if photo and photo.filename:
-#             filename = secure_filename(photo.filename)
-#             photo_path = os.path.join(UPLOAD_FOLDER, filename)
-#             photo.save(photo_path)
-
-#         # 💾 TODO: сохранить данные в SQLite
-#         print(f"Создан профиль: {name}, {age}, {city}, {interests}, {about}, {photo_path}")
-
-#         return redirect(url_for('main.index'))
-
-#     return render_template('create_profile.html')
-
-
-import sqlite3
-
-DB_PATH = 'data/profiles.db'
-UPLOAD_FOLDER = 'app/static/uploads'
 
 def init_db():
     os.makedirs(os.path.dirname(DB_PATH), exist_ok=True)
