@@ -7,6 +7,8 @@ def index():
     return render_template('index.html')
 
 
+
+
 # @main.route('/create_profile', methods=['GET', 'POST'])
 # def create_profile():
 #     if request.method == 'POST':
