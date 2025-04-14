@@ -9,7 +9,7 @@ services:
     expose:
       - "5000"
     volumes:
-      - ./app:/app
+      - ./app:/app/app
       - ./data:/app/data
     restart: unless-stopped
 
