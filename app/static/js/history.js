@@ -5,8 +5,9 @@ console.log("Scripts connected..")
 
 window.addEventListener('DOMContentLoaded', () => {
     // При первом запуске pushState, чтобы не выйти сразу из приложения
-    if (!window.location.hash) {
-        history.replaceState({ page: "home" }, "", window.location.pathname + "#home");
+ 
+    if (!window.history.state) {
+        history.replaceState({ page: "home" }, "", window.location.pathname);
     }
 
     // Пример: если пользователь нажимает "назад"
