@@ -5,9 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Поиск анкет</title>
-  <!-- <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}"> -->
-  <link rel="stylesheet" href="static/styles.css">
-
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
   <style>
     .form-group {
       margin-bottom: 1rem;
@@ -42,4 +40,30 @@
 <body>
   <div class="card">
     <h2>Поиск анкет</h2>
-    <form
+    <form method="POST">
+      <div class="form-group">
+        <label>Имя:</label>
+        <input type="text" name="name" placeholder="Поиск по имени">
+      </div>
+      <div class="form-group">
+        <label>Город:</label>
+        <input type="text" name="city" placeholder="Поиск по городу">
+      </div>
+      <div class="form-group">
+        <label>Возраст от:</label>
+        <input type="number" name="age_min" min="18" max="99">
+      </div>
+      <div class="form-group">
+        <label>До:</label>
+        <input type="number" name="age_max" min="18" max="99">
+      </div>
+      <div class="form-group">
+        <label>Интересы:</label>
+        <input type="text" name="interests" placeholder="Например: музыка, спорт...">
+      </div>
+      <button type="submit">🔍 Найти</button>
+    </form>
+  </div>
+</body>
+
+</html>
