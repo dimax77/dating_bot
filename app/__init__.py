@@ -12,7 +12,7 @@ logger = logging.getLogger(__name__)
 def create_app():
     init_db()
 
-    app = Flask(__name__, static_folder=os.path.join(os.path.dirname(__file__), 'static'))
+    app = Flask(__name__, static_folder='static')
     logger.info(f'Current dir been seen from __init__.py: {os.path.dirname(__file__)}')
 
     # print(f'Current dir been seen from __init__.py: {os.path.dirname(__file__)}')
