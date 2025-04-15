@@ -1,8 +1,30 @@
+<!-- templates/result.html -->
 <!DOCTYPE html>
-<html>
-<head><title>Результаты</title></head>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Результаты поиска</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
 <body>
-<h2>Результаты поиска</h2>
-<p>Здесь будут карточки пользователей</p>
+    <header>
+        <h1>🔍 Результаты поиска</h1>
+        <a href="{{ url_for('main.index') }}" class="button">← На главную</a>
+    </header>
+
+    <main>
+        <section class="results">
+            <p>Пока ничего не найдено 😔</p>
+            <!-- Здесь позже можно добавить список найденных пользователей -->
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 Carusel</p>
+    </footer>
 </body>
+
 </html>
