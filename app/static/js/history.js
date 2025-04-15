@@ -1,4 +1,8 @@
 // static/js/history.js
+
+console.log("Scripts connected..")
+
+
 window.addEventListener('DOMContentLoaded', () => {
     // При первом запуске pushState, чтобы не выйти сразу из приложения
     if (!window.location.hash) {
