@@ -6,6 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Добро пожаловать</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script src="{{ url_for('static', filename='js/history.js') }}"></script>
+
     <style>
         * {
             box-sizing: border-box;
@@ -65,8 +67,8 @@
 
 <body>
     <h1>Добро пожаловать ❤️</h1>
-    <a href="/create_profile" class="button">Создать анкету</a>
-    <a href="/search" class="button">🔍 Поиск анкет</a>
+    <a href="/create_profile" class="button" onclick="navigateTo(event, '/create_profile')">Создать анкету</a>
+    <a href="/search" class="button" onclick="navigateTo(event, '/search')">🔍 Поиск анкет</a>
 
     <div class="close-btn" onclick="Telegram.WebApp.close()">Закрыть мини-приложение</div>
 
