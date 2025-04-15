@@ -7,7 +7,7 @@ import os
 def create_app():
     init_db()
 
-    app = Flask(__name__, static_folder=os.path.join(os.path.dirname(__file__), '../static'),)
+    app = Flask(__name__, static_folder=os.path.join(os.path.dirname(__file__), 'static'),)
     app.secret_key = 'supersecretkey'
     app.register_blueprint(main)
     return app
