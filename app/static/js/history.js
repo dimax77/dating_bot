@@ -24,8 +24,25 @@ window.addEventListener('DOMContentLoaded', () => {
     });
 });
 
+// function navigateTo(event, url) {
+//     event.preventDefault();
+//     history.pushState({ page: url }, "", url);
+//     window.location.assign(url);
+// }
+
 function navigateTo(event, url) {
     event.preventDefault();
     history.pushState({ page: url }, "", url);
-    window.location.assign(url);
+
+    fetch(url)
+        .then(res => res.text())
+        .then(html => {
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(html, 'text/html');
+            const content = doc.body.innerHTML;
+
+            document.body.innerHTML = content;
+            window.scrollTo(0, 0); // сбросить скролл вверх
+        })
+        .catch(err => console.error('Ошибка загрузки страницы:', err));
 }
