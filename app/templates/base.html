@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Dating MiniApp</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="{{ url_for('static', filename='js/spa.js') }}" defer></script>
+</head>
+
+<body>
+    <nav>
+        <a href="/" data-link>🏠 Главная</a>
+        <a href="/create_profile" data-link>📝 Создать профиль</a>
+    </nav>
+
+    <main id="content">
+        {% include "fragments/home.html" %}
+    </main>
+</body>
+
+</html>

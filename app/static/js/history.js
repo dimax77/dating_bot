@@ -27,5 +27,5 @@ window.addEventListener('DOMContentLoaded', () => {
 function navigateTo(event, url) {
     event.preventDefault();
     history.pushState({ page: url }, "", url);
-    window.location.href = url;
+    window.location.assign(url);
 }
