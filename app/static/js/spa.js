@@ -42,3 +42,30 @@ document.addEventListener("DOMContentLoaded", () => {
     // Начальная загрузка
     loadPage(location.pathname);
 });
+
+document.addEventListener("submit", async (e) => {
+    const form = e.target;
+    if (form.id === "profileForm") {
+        e.preventDefault();
+
+        const formData = new FormData(form);
+        try {
+            const response = await fetch("/create_profile", {
+                method: "POST",
+                body: formData,
+            });
+
+            const html = await response.text();
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(html, "text/html");
+            const newContent = doc.querySelector("main");
+
+            document.getElementById("content").innerHTML = newContent.innerHTML;
+
+            history.pushState(null, null, "/"); // 👈 добавим в историю
+            window.scrollTo(0, 0);
+        } catch (err) {
+            console.error("Ошибка при создании анкеты:", err);
+        }
+    }
+});

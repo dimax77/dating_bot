@@ -17,7 +17,7 @@ UPLOAD_FOLDER = 'static/uploads'
 
 @main.route('/')
 def index():
-    return render_template('base.html')
+    return render_template('base.html', content_template="fragments/home.html", body_class="welcome")
 
 @main.route('/search', methods=['GET', 'POST'])
 def search():
