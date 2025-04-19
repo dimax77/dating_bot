@@ -15,9 +15,6 @@ DB_PATH = 'data/profiles.db'
 main = Blueprint('main', __name__)
 UPLOAD_FOLDER = 'static/uploads'
 
-# @main.route('/')
-# def index():
-#     return render_template('index.html')
 @main.route('/')
 def index():
     return render_template('base.html')
@@ -85,6 +82,7 @@ def create_profile():
         ''', (name, age, city, interests, about, filename, telegram_id))
         conn.commit()
         conn.close()
-
-        return redirect(url_for('main.index'))
+        return render_template('base.html', content_template='fragments/home.html', message="Анкета успешно создана!")
+        # return redirect(url_for('main.index'))
     return render_template('base.html', content_template='fragments/create_profile.html')
+

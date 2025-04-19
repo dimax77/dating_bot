@@ -171,3 +171,20 @@ form button:hover {
      margin-top: 1rem;
      border-radius: 8px;
  }
+
+ .alert {
+     margin: 1rem 0;
+     padding: 1rem;
+     border-radius: 8px;
+     text-align: center;
+ }
+
+ .success {
+     background-color: #d4edda;
+     color: #155724;
+ }
+
+ .error {
+     background-color: #f8d7da;
+     color: #721c24;
+ }
