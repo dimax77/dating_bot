@@ -1,0 +1,31 @@
+<!-- app/templates/fragments/edit_profile.html -->
+<div class="container">
+    <h2>Редактировать анкету</h2>
+    <form action="/edit_profile" method="post" enctype="multipart/form-data">
+        <label>Имя:
+            <input type="text" name="name" value="{{ profile.name }}" required />
+        </label>
+        <label>Возраст:
+            <input type="number" name="age" value="{{ profile.age }}" required />
+        </label>
+        <label>Город:
+            <input type="text" name="city" value="{{ profile.city }}" required />
+        </label>
+        <label>Интересы:
+            <input type="text" name="interests" value="{{ profile.interests }}" />
+        </label>
+        <label>Описание:
+            <textarea name="about">{{ profile.about }}</textarea>
+        </label>
+        <label>Фото:
+            <input type="file" name="photo" accept="image/*" />
+            {% if profile.photo %}
+            <img src="/static/uploads/{{ profile.photo }}" class="preview-img" />
+            {% endif %}
+        </label>
+        <button type="submit">💾 Сохранить</button>
+    </form>
+    <form action="/delete_profile" method="post" onsubmit="return confirm('Удалить профиль?')">
+        <button type="submit" class="danger">🗑️ Удалить профиль</button>
+    </form>
+</div>

@@ -1,0 +1,13 @@
+<!-- app/templates/fragments/dialog.html -->
+<div class="container">
+    <h2>Диалог с пользователем #{{ user_id }}</h2>
+    <div id="messages">
+        {% for msg in messages %}
+        <p><strong>{{ msg.sender_id }}:</strong> {{ msg.message }}</p>
+        {% endfor %}
+    </div>
+    <form action="/dialog/{{ user_id }}" method="post">
+        <input type="text" name="message" required />
+        <button type="submit">📤 Отправить</button>
+    </form>
+</div>

@@ -1,3 +1,4 @@
+# app/__init__.py
 from flask import Flask
 from app.routes import main
 from app.routes import init_db

@@ -1,11 +1,93 @@
 // app/static/js/spa.js
+
+const STORAGE_KEY = 'navStack';
+let navStack = JSON.parse(sessionStorage.getItem(STORAGE_KEY)) || [];
+let currentPath = location.pathname + location.search;
+
+// Telegram WebApp готов
+Telegram.WebApp.ready();
+Telegram.WebApp.expand();
+
+// Обновление состояния кнопки "Назад"
+function updateBackButton() {
+    if (navStack.length > 0) {
+        Telegram.WebApp.BackButton.show();
+    } else {
+        Telegram.WebApp.BackButton.hide();
+    }
+}
+
+// Сохранение навигационного стека
+function persistStack() {
+    sessionStorage.setItem(STORAGE_KEY, JSON.stringify(navStack));
+}
+
+// Показ/скрытие прелоадера
+function showLoader() {
+    const loader = document.getElementById('loader');
+    if (loader) loader.style.display = 'block';
+}
+
+function hideLoader() {
+    const loader = document.getElementById('loader');
+    if (loader) loader.style.display = 'none';
+}
+
+// Загрузка и отображение страницы
+async function loadPage(url) {
+    showLoader();
+    try {
+        const response = await fetch(url);
+        if (!response.ok) throw new Error("Page not found");
+
+        const html = await response.text();
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(html, "text/html");
+        const newContent = doc.querySelector("main") || doc.body;
+
+        document.getElementById("content").innerHTML = newContent.innerHTML;
+        window.scrollTo(0, 0);
+    } catch (err) {
+        console.error("Ошибка загрузки страницы:", err);
+        document.getElementById("content").innerHTML = "<p>Ошибка загрузки страницы.</p>";
+    } finally {
+        hideLoader();
+    }
+}
+
+// Навигация по ссылке
+async function navigateTo(url) {
+    if (url !== currentPath) {
+        navStack.push(currentPath);
+        currentPath = url;
+        history.pushState(null, null, url);
+        await loadPage(url);
+        persistStack();
+        updateBackButton();
+    }
+}
+
+// Обработка кнопки "Назад" Telegram
+Telegram.WebApp.BackButton.onClick(() => {
+    if (navStack.length > 0) {
+        const prevUrl = navStack.pop();
+        currentPath = prevUrl;
+        history.pushState(null, null, prevUrl);
+        loadPage(prevUrl);
+        persistStack();
+        updateBackButton();
+    } else {
+        Telegram.WebApp.close();
+    }
+});
+
+// DOM загружен
 document.addEventListener("DOMContentLoaded", () => {
     const main = document.getElementById("content");
 
-    // Перехват всех внутренних переходов
+    // Перехват всех внутренних переходов по ссылкам
     document.body.addEventListener("click", async (e) => {
         const link = e.target.closest("a[data-link]");
-        console.log("Processing click on ", link)
         if (link) {
             e.preventDefault();
             const url = link.getAttribute("href");
@@ -13,10 +95,14 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
+    // Обработка кнопки "Назад" браузера
     window.addEventListener("popstate", () => {
-        loadPage(location.pathname);
+        currentPath = location.pathname + location.search;
+        loadPage(currentPath);
+        updateBackButton();
     });
 
+    // Обработка отправки формы профиля
     document.addEventListener("submit", async (e) => {
         const form = e.target;
         if (form.id === "profileForm") {
@@ -34,9 +120,11 @@ document.addEventListener("DOMContentLoaded", () => {
                 const doc = parser.parseFromString(html, "text/html");
                 const newContent = doc.querySelector("main");
 
-                document.getElementById("content").innerHTML = newContent.innerHTML;
+                main.innerHTML = newContent.innerHTML;
 
-                history.pushState(null, null, "/"); // 👈 добавим в историю
+                const url = "/";
+                history.pushState(null, null, url);
+                currentPath = url;
                 window.scrollTo(0, 0);
             } catch (err) {
                 console.error("Ошибка при создании анкеты:", err);
@@ -44,31 +132,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
-    async function navigateTo(url) {
-        history.pushState(null, null, url);
-        console.log("In history pushed ", url)
-        await loadPage(url);
-    }
-
-    async function loadPage(url) {
-        try {
-            const response = await fetch(url);
-            if (!response.ok) throw new Error("Page not found");
-
-            const html = await response.text();
-            const parser = new DOMParser();
-            const doc = parser.parseFromString(html, "text/html");
-            const newContent = doc.querySelector("main") || doc.body;
-
-            main.innerHTML = newContent.innerHTML;
-            window.scrollTo(0, 0);
-        } catch (err) {
-            console.error("Ошибка загрузки страницы:", err);
-            main.innerHTML = "<p>Ошибка загрузки страницы.</p>";
-        }
-    }
-
-    // Начальная загрузка
-    loadPage(location.pathname);
+    // Инициализация
+    loadPage(currentPath);
+    updateBackButton();
 });
-

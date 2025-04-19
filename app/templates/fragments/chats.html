@@ -1,0 +1,13 @@
+<!-- app/templates/fragments/chats.html -->
+<div class="container">
+    <h2>Диалоги</h2>
+    <ul>
+        {% for chat in chats %}
+        <li>
+            <a href="/dialog/{{ chat.user_id }}" data-link>
+                💬 С {{ chat.user_name }}
+            </a>
+        </li>
+        {% endfor %}
+    </ul>
+</div>

@@ -1,0 +1,24 @@
+<!-- app/templates/fragments/search.html -->
+<div class="container">
+    <h2>Поиск анкет</h2>
+    <form method="get" action="/search">
+        <label>Город:
+            <input type="text" name="city" />
+        </label>
+        <button type="submit">🔍 Найти</button>
+    </form>
+
+    <div id="search-results">
+        {% for profile in profiles %}
+        <div class="card">
+            <p><strong>{{ profile.name }}</strong> ({{ profile.age }})</p>
+            <p>{{ profile.city }}</p>
+            <p>{{ profile.about }}</p>
+            {% if profile.photo %}
+            <img src="/static/uploads/{{ profile.photo }}" class="preview-img" />
+            {% endif %}
+            <a href="/dialog/{{ profile.id }}" data-link>💬 Написать</a>
+        </div>
+        {% endfor %}
+    </div>
+</div>
