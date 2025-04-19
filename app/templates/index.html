@@ -7,6 +7,8 @@
     <title>Добро пожаловать</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script src="{{ url_for('static', filename='js/history.js') }}"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+
 
     <style>
         * {
@@ -65,7 +67,7 @@
     </style>
 </head>
 
-<body>
+<body class="welcome">
     <h1>Добро пожаловать ❤️</h1>
     <a href="/create_profile" class="button" onclick="navigateTo(event, '/create_profile')">Создать анкету</a>
     <a href="/search" class="button" onclick="navigateTo(event, '/search')">🔍 Поиск анкет</a>
@@ -78,7 +80,7 @@
 
         // Необязательно, но можешь кастомизировать:
         tg.MainButton.hide(); // Если не используешь основную кнопку
-        // tg.expand(); // Разворачивает WebApp на полный экран
+        tg.expand(); // Разворачивает WebApp на полный экран
     </script>
 </body>
 

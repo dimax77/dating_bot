@@ -1,4 +1,4 @@
-/* Общая база */
+/* Общая база
 body {
     margin: 0;
     font-family: 'Segoe UI', sans-serif;
@@ -52,3 +52,122 @@ form button {
 form button:hover {
     background: #0056b3;
 }
+ */
+
+ /* Общие стили */
+ * {
+     box-sizing: border-box;
+     margin: 0;
+     padding: 0;
+     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+ }
+
+ body {
+     margin: 0;
+     font-family: 'Segoe UI', sans-serif;
+     background: #f9f9f9;
+     color: #333;
+ }
+
+ body.welcome {
+     background: linear-gradient(135deg, #ff9a9e, #fad0c4);
+     min-height: 100vh;
+     display: flex;
+     flex-direction: column;
+     justify-content: center;
+     align-items: center;
+     padding: 2rem;
+ }
+
+ /* Заголовки */
+ h1,
+ h2 {
+     text-align: center;
+     color: #333;
+ }
+
+ h1 {
+     font-size: 1.8rem;
+     margin-bottom: 1.5rem;
+ }
+
+ /* Кнопки */
+ .button {
+     display: block;
+     width: 100%;
+     max-width: 320px;
+     background-color: #ffffffdd;
+     border: none;
+     padding: 1rem;
+     border-radius: 12px;
+     text-align: center;
+     text-decoration: none;
+     color: #333;
+     font-size: 1rem;
+     margin: 0.5rem 0;
+     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+     transition: background-color 0.3s ease, transform 0.2s ease;
+ }
+
+ .button:hover {
+     background-color: #fff;
+     transform: scale(1.02);
+ }
+
+ .close-btn {
+     margin-top: 2rem;
+     font-size: 0.9rem;
+     color: #555;
+     text-decoration: underline;
+     cursor: pointer;
+ }
+
+ /* Форма */
+ .container {
+     max-width: 600px;
+     margin: 40px auto;
+     padding: 20px;
+     background: white;
+     border-radius: 10px;
+     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+ }
+
+ form label {
+     display: block;
+     margin-bottom: 15px;
+ }
+
+ form input[type="text"],
+ form input[type="number"],
+ form input[type="file"],
+ form textarea {
+     width: 100%;
+     padding: 10px;
+     margin-top: 4px;
+     border: 1px solid #ccc;
+     border-radius: 6px;
+     box-sizing: border-box;
+ }
+
+ form button {
+     background: #007bff;
+     color: white;
+     padding: 12px;
+     border: none;
+     border-radius: 6px;
+     width: 100%;
+     font-size: 16px;
+     cursor: pointer;
+ }
+
+ form button:hover {
+     background: #0056b3;
+ }
+
+ /* Превью аватарки */
+ .preview-img {
+     max-width: 100%;
+     height: auto;
+     margin-top: 1rem;
+     border-radius: 8px;
+ }
