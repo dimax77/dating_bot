@@ -5,6 +5,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // Перехват всех внутренних переходов
     document.body.addEventListener("click", async (e) => {
         const link = e.target.closest("a[data-link]");
+        console.log("Processing click on ", link)
         if (link) {
             e.preventDefault();
             const url = link.getAttribute("href");
@@ -16,8 +17,36 @@ document.addEventListener("DOMContentLoaded", () => {
         loadPage(location.pathname);
     });
 
+    document.addEventListener("submit", async (e) => {
+        const form = e.target;
+        if (form.id === "profileForm") {
+            e.preventDefault();
+
+            const formData = new FormData(form);
+            try {
+                const response = await fetch("/create_profile", {
+                    method: "POST",
+                    body: formData,
+                });
+
+                const html = await response.text();
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(html, "text/html");
+                const newContent = doc.querySelector("main");
+
+                document.getElementById("content").innerHTML = newContent.innerHTML;
+
+                history.pushState(null, null, "/"); // 👈 добавим в историю
+                window.scrollTo(0, 0);
+            } catch (err) {
+                console.error("Ошибка при создании анкеты:", err);
+            }
+        }
+    });
+
     async function navigateTo(url) {
         history.pushState(null, null, url);
+        console.log("In history pushed ", url)
         await loadPage(url);
     }
 
@@ -43,29 +72,3 @@ document.addEventListener("DOMContentLoaded", () => {
     loadPage(location.pathname);
 });
 
-document.addEventListener("submit", async (e) => {
-    const form = e.target;
-    if (form.id === "profileForm") {
-        e.preventDefault();
-
-        const formData = new FormData(form);
-        try {
-            const response = await fetch("/create_profile", {
-                method: "POST",
-                body: formData,
-            });
-
-            const html = await response.text();
-            const parser = new DOMParser();
-            const doc = parser.parseFromString(html, "text/html");
-            const newContent = doc.querySelector("main");
-
-            document.getElementById("content").innerHTML = newContent.innerHTML;
-
-            history.pushState(null, null, "/"); // 👈 добавим в историю
-            window.scrollTo(0, 0);
-        } catch (err) {
-            console.error("Ошибка при создании анкеты:", err);
-        }
-    }
-});
