@@ -1,6 +1,41 @@
+<!-- app/templates/fragments/create_profile.html -->
+<div class="container">
+    <h2>Создание анкеты</h2>
+    <form action="/create_profile" method="post" enctype="multipart/form-data">
+        <label>Имя:
+            <input type="text" name="name" required />
+        </label>
+        <label>Возраст:
+            <input type="number" name="age" min="18" max="99" required />
+        </label>
+        <label>Город:
+            <input type="text" name="city" required />
+        </label>
+        <label>Интересы:
+            <input type="text" name="interests" placeholder="Музыка, спорт, кино..." />
+        </label>
+        <label>Описание:
+            <textarea name="about" rows="4" placeholder="Расскажи немного о себе..."></textarea>
+        </label>
+        <label>Аватарка:
+            <input type="file" name="photo" accept="image/*" onchange="previewPhoto(event)" />
+            <img id="photoPreview" class="preview-img" style="display: none;" />
+        </label>
+        <button type="submit">Сохранить анкету</button>
+    </form>
+</div>
 
-<h1>Создание профиля</h1>
-<form>
-    <input type="text" placeholder="Ваше имя">
-    <button type="submit">Создать</button>
-</form>
+<script>
+    function previewPhoto(event) {
+        const input = event.target;
+        const preview = document.getElementById('photoPreview');
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                preview.src = e.target.result;
+                preview.style.display = 'block';
+            };
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+</script>

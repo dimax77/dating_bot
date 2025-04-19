@@ -15,9 +15,12 @@ DB_PATH = 'data/profiles.db'
 main = Blueprint('main', __name__)
 UPLOAD_FOLDER = 'static/uploads'
 
+# @main.route('/')
+# def index():
+#     return render_template('index.html')
 @main.route('/')
 def index():
-    return render_template('index.html')
+    return render_template('base.html')
 
 @main.route('/search', methods=['GET', 'POST'])
 def search():
@@ -84,5 +87,4 @@ def create_profile():
         conn.close()
 
         return redirect(url_for('main.index'))
-
-    return render_template('create_profile.html')
+    return render_template('base.html', content_template='fragments/create_profile.html')

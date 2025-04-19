@@ -1,2 +1,12 @@
-<h1>Добро пожаловать в Dating!</h1>
-<p>Это главная страница</p>
+<!-- app/templates/fragments/home.html -->
+<h1>Добро пожаловать ❤️</h1>
+<a href="/create_profile" class="button" data-link>Создать анкету</a>
+<a href="/search" class="button" data-link>🔍 Поиск анкет</a>
+
+<div class="close-btn" onclick="Telegram.WebApp.close()">Закрыть мини-приложение</div>
+
+<script>
+    const tg = window.Telegram.WebApp;
+    tg.ready();
+    tg.expand();
+</script>
