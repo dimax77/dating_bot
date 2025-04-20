@@ -1,7 +1,10 @@
 <!-- app/templates/fragments/home.html -->
-<h1>Добро пожаловать ❤️</h1>
+<h1>Привет, {{ user.name }} 👋</h1>
+
 <a href="/edit_profile" class="button" data-link>Редактировать анкету</a>
 <a href="/search" class="button" data-link>🔍 Поиск анкет</a>
+<a href="/chats" data-link>💬 Сообщения <span class="badge">{{ user.unread_count or 0 }}</span></a>
+
 
 <div class="close-btn" onclick="Telegram.WebApp.close()">Закрыть мини-приложение</div>
 
