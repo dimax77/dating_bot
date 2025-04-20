@@ -10,13 +10,15 @@ Telegram.WebApp.expand();
 
 const tgUser = Telegram.WebApp.initDataUnsafe.user;
 
-if (tgUser && tgUser.id) {
+if (tgUser && tgUser.id && !sessionStorage.getItem("auth_done")) {
     fetch("/auth", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ telegram_id: tgUser.id })
     }).then(() => {
         // Перезагрузим, чтобы отобразилось правильное содержимое
+        sessionStorage.setItem("auth_done", "1");
+
         location.reload();
     });
 }
