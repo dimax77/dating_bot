@@ -29,7 +29,7 @@ def index():
 
             if user:
                 cur.execute('''
-                    SELECT *(COUNT) FROM messages
+                    SELECT COUNT(*) FROM messages
                     WHERE receiver_id = ? AND read IS NULL
                 ''')
 

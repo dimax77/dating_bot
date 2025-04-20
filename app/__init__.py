@@ -11,7 +11,6 @@ logger = logging.getLogger(__name__)
 
 
 def create_app():
-    init_db()
 
     base_dir = os.path.abspath(os.path.dirname(__file__))
     static_dir = os.path.join(base_dir, 'static')
@@ -21,5 +20,10 @@ def create_app():
 
     app.secret_key = 'supersecretkey'
     app.register_blueprint(main)
+
+    # Вызов init_db после создания app
+    with app.app_context():
+        init_db()
+
     return app
 
