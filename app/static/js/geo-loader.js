@@ -13,6 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
         .then(res => res.json())
         .then(countries => {
             console.log('Countries received:', countries);
+            countrySelect.innerHTML = '<option value="">Select a country</option>';
 
             countries.forEach(country => {
                 const option = document.createElement('option');
