@@ -1,7 +1,7 @@
 # app/routes.py
 
 from flask import Blueprint, render_template, request, session, jsonify, redirect, url_for
-from utils.forms import ProfileForm
+from app.utils.forms import ProfileForm
 import os
 import sqlite3
 
