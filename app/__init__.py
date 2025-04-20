@@ -2,7 +2,7 @@
 from flask import Flask
 from app.routes import main
 from app.db.init_db import init_db
-import os
+import os, sys
 
 import logging
 

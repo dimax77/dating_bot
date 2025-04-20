@@ -73,7 +73,9 @@ def create_profile():
         interests = request.form['interests']
         about = request.form['about']
         photo = request.files.get('photo')
-        telegram_id = request.args.get('id')  # если мы получаем id через query params из Telegram
+        # telegram_id = request.args.get('id')  # если мы получаем id через query params из Telegram
+        telegram_id = session.get('user_id')  # корректно получаем из сессии
+
 
         filename = None
         if photo and photo.filename:
