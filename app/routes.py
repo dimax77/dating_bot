@@ -43,7 +43,7 @@ def index():
                            body_class="welcome")
         
         
-    conn.close()
+        conn.close()
     return render_template('base.html',
                                 content_template="fragments/intro.html",
                                 body_class="welcome")
