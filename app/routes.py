@@ -1,20 +1,68 @@
 # app/routes.py
 
-from flask import Blueprint, render_template, request, redirect, url_for
+from flask import Blueprint, render_template, request, session, jsonify
 import os
 import sqlite3
 
 from werkzeug.utils import secure_filename
 
 DB_PATH = 'data/profiles.db'
-# UPLOAD_FOLDER = 'app/static/uploads'
 
 main = Blueprint('main', __name__)
 UPLOAD_FOLDER = 'static/uploads'
 
 @main.route('/')
 def index():
-    return render_template('base.html', content_template="fragments/home.html", body_class="welcome")
+    user = None
+    unread_count = 0
+    user_id = session.get('user_id')
+
+    if user_id:
+        conn = sqlite3.connect(DB_PATH)
+        cur = conn.cursor()
+
+        cur.execute("SELECT * FROM profiles WHERE telegram_id = ?", (user_id,))
+        row = cur.fetchone()
+
+        if row:
+            user = dict(zip(['id', 'name', 'age', 'city', 'interests', 'about', 'photo', 'telegram_id'], row))
+
+            if user:
+                cur.execute('''
+                    SELECT *(COUNT) FROM messages
+                    WHERE receiver_id = ? AND read IS NULL
+                ''')
+
+                unread_count = cur.fetchone()[0]
+                conn.close()
+
+                return render_template('base.html',
+                           content_template="fragments/home.html",
+                           user = user,
+                           unread_count = unread_count,
+                           body_class="welcome")
+        
+        
+    conn.close()
+    return render_template('base.html',
+                                content_template="fragments/intro.html",
+                                body_class="welcome")
+
+
+    
+
+
+@main.route("/auth", methods=["POST"])
+def auth():
+    data = request.get_json()
+    telegram_id = data.get("telegram_id")
+    
+    if telegram_id:
+        session["user_id"] = telegram_id
+        return jsonify({"status": "ok"})
+    else:
+        return jsonify({"status": "error", "message": "No Telegram ID"}), 400
+
 
 @main.route('/create_profile', methods=['GET', 'POST'])
 def create_profile():
@@ -120,40 +168,58 @@ def chats():
 
 @main.route('/dialog/<int:user_id>', methods=['GET', 'POST'])
 def dialog(user_id):
+    my_id = session.get("user_id")
+
     if request.method == 'POST':
-        sender_id = request.args.get('from')  # для MVP достаточно
+        # sender_id = request.args.get('from')
         message = request.form['message']
         conn = sqlite3.connect(DB_PATH)
         cur = conn.cursor()
-        cur.execute('INSERT INTO messages (sender_id, receiver_id, message) VALUES (?, ?, ?)',
-                    (sender_id, user_id, message))
+        cur.execute('INSERT INTO messages (sender_id, receiver_id, message, read) VALUES (?, ?, ?, 0)',
+                    (my_id, user_id, message))
         conn.commit()
         conn.close()
+
+        # Add here function call to inform user about new message via dating_bot
+        # Format: You have new message from <User>: <Message>
+        # May be add later a brief deep link to chat or leave as is
     
     conn = sqlite3.connect(DB_PATH)
     cur = conn.cursor()
-    cur.execute('SELECT * FROM messages WHERE sender_id=? OR receiver_id=?', (user_id, user_id))
+
+    cur.execute('''
+        UPDATE messages SET read = 1
+        WHERE receiver_id = ? AND sender_id = ? AND read = 0
+    ''', (my_id, user_id))
+    conn.commit()
+
+    cur.execute('''
+        SELECT * FROM messages
+        WHERE (sender_id=? AND receiver_id=?)
+        OR (sender_id=? AND receiver_id=?)
+    ''', (my_id, user_id, user_id, my_id))
     rows = cur.fetchall()
-    messages = [dict(zip(['id', 'sender_id', 'receiver_id', 'message', 'timestamp'], row)) for row in rows]
+    messages = [dict(zip(['id', 'sender_id', 'receiver_id', 'message', 'read', 'timestamp'], row)) for row in rows]
     conn.close()
+
     return render_template('base.html', content_template='fragments/dialog.html', messages=messages, user_id=user_id)
 
-def init_db():
-    os.makedirs(os.path.dirname(DB_PATH), exist_ok=True)
-    conn = sqlite3.connect(DB_PATH)
-    cur = conn.cursor()
-    cur.execute('''
-        CREATE TABLE IF NOT EXISTS profiles (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            name TEXT,
-            age INTEGER,
-            city TEXT,
-            interests TEXT,
-            about TEXT,
-            photo TEXT,
-            telegram_id INTEGER
-        )
-    ''')
-    conn.commit()
-    conn.close()
+# def init_db():
+#     os.makedirs(os.path.dirname(DB_PATH), exist_ok=True)
+#     conn = sqlite3.connect(DB_PATH)
+#     cur = conn.cursor()
+#     cur.execute('''
+#         CREATE TABLE IF NOT EXISTS profiles (
+#             id INTEGER PRIMARY KEY AUTOINCREMENT,
+#             name TEXT,
+#             age INTEGER,
+#             city TEXT,
+#             interests TEXT,
+#             about TEXT,
+#             photo TEXT,
+#             telegram_id INTEGER
+#         )
+#     ''')
+#     conn.commit()
+#     conn.close()
 

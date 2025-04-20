@@ -1,6 +1,12 @@
+# app/db/init_db.py
 import sqlite3
+import os
 
-conn = sqlite3.connect('data/app.db')
+DB_PATH = 'data/app.db'
+
+os.makedirs(os.path.dirname(DB_PATH), exist_ok=True)
+
+conn = sqlite3.connect(DB_PATH)
 c = conn.cursor()
 
 c.execute('''
@@ -22,6 +28,7 @@ CREATE TABLE IF NOT EXISTS messages (
     sender_id INTEGER,
     receiver_id INTEGER,
     message TEXT,
+    read INTEGER DEFAULT 0,
     timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
 )
 ''')

@@ -8,6 +8,19 @@ let currentPath = location.pathname + location.search;
 Telegram.WebApp.ready();
 Telegram.WebApp.expand();
 
+const tgUser = Telegram.WebApp.initDataUnsafe.user;
+
+if (tgUser && tgUser.id) {
+    fetch("/auth", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ telegram_id: tgUser.id })
+    }).then(() => {
+        // Перезагрузим, чтобы отобразилось правильное содержимое
+        location.reload();
+    });
+}
+
 // Обновление состояния кнопки "Назад"
 function updateBackButton() {
     if (navStack.length > 0) {
