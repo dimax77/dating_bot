@@ -1,4 +1,4 @@
-<form method="POST" enctype="multipart/form-data">
+<!-- <form method="POST" enctype="multipart/form-data">
     {{ form.hidden_tag() }}
     <label>{{ form.name.label }} {{ form.name() }}</label><br>
 
@@ -17,7 +17,46 @@
     <img id="photo-preview" style="max-height: 150px; display:none;"><br>
 
     {{ form.submit() }}
+</form> -->
+<form method="POST" enctype="multipart/form-data">
+    {{ form.hidden_tag() }}
+
+    <div class="form-group">
+        <label>{{ form.name.label }} {{ form.name() }}</label>
+    </div>
+
+    <div class="form-group">
+        <label>{{ form.gender.label }} {{ form.gender() }}</label>
+    </div>
+
+    <div class="form-group">
+        <label>{{ form.birthdate.label }} {{ form.birthdate() }}</label>
+    </div>
+
+    <div class="form-group">
+        <label>Country {{ form.country(id='country') }}</label>
+    </div>
+
+    <div class="form-group">
+        <label>City {{ form.city(id='city') }}</label>
+    </div>
+
+    <div class="form-group">
+        <label>{{ form.interests.label }} {{ form.interests() }}</label>
+    </div>
+
+    <div class="form-group">
+        <label>{{ form.about.label }} {{ form.about() }}</label>
+    </div>
+
+    <div class="form-group">
+        <label>{{ form.photo.label }} {{ form.photo(id='photo') }}</label>
+        <img id="photo-preview" class="preview-img" style="display:none;">
+    </div>
+
+    <button type="submit" class="submit-btn">Submit</button>
 </form>
+
 <!-- <script src="{{ url_for('static', filename='js/geo-loader.js') }}"></script> -->
 <!-- 
 <script>
