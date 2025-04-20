@@ -1,6 +1,7 @@
 # app/routes.py
 
 from flask import Blueprint, render_template, request, session, jsonify, redirect, url_for
+from utils.forms import ProfileForm
 import os
 import sqlite3
 
@@ -64,37 +65,45 @@ def auth():
         return jsonify({"status": "error", "message": "No Telegram ID"}), 400
 
 
+
 @main.route('/create_profile', methods=['GET', 'POST'])
 def create_profile():
-    if request.method == 'POST':
-        name = request.form['name']
-        age = request.form['age']
-        city = request.form['city']
-        interests = request.form['interests']
-        about = request.form['about']
-        photo = request.files.get('photo')
+    form = ProfileForm()
+
+    if request.method == 'POST' and form.validate_on_submit():
         telegram_id = session.get('user_id')
-
         filename = None
-        if photo and photo.filename:
-            os.makedirs(UPLOAD_FOLDER, exist_ok=True)
-            filename = secure_filename(photo.filename)
-            photo.save(os.path.join(UPLOAD_FOLDER, filename))
 
+        if form.photo.data:
+            os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+            filename = secure_filename(form.photo.data.filename)
+            form.photo.data.save(os.path.join(UPLOAD_FOLDER, filename))
+
+        # Сохраняем в базу (пример с SQLite)
+        from app.db import DB_PATH
+        import sqlite3
         conn = sqlite3.connect(DB_PATH)
         cur = conn.cursor()
         cur.execute('''
-            INSERT INTO profiles (name, age, city, interests, about, photo, telegram_id)
-            VALUES (?, ?, ?, ?, ?, ?, ?)
-        ''', (name, age, city, interests, about, filename, telegram_id))
+            INSERT INTO profiles (name, gender, birthdate, country, city, interests, about, photo, telegram_id)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+        ''', (
+            form.name.data,
+            form.gender.data,
+            form.birthdate.data.strftime('%Y-%m-%d'),
+            form.country.data,
+            form.city.data,
+            form.interests.data,
+            form.about.data,
+            filename,
+            telegram_id
+        ))
         conn.commit()
         conn.close()
 
-        # ✅ Перенаправляем, где index сам разрулит user
         return redirect(url_for('main.index'))
 
-    return render_template('base.html', content_template='fragments/create_profile.html')
-
+    return render_template('base.html', content_template='fragments/create_profile.html', form=form)
 
 @main.route('/edit_profile', methods=['GET', 'POST'])
 def edit_profile():

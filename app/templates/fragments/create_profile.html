@@ -1,41 +1,83 @@
-<!-- app/templates/fragments/create_profile.html -->
-<div class="container">
-    <h2>Создание анкеты</h2>
-    <form action="/create_profile" method="post" enctype="multipart/form-data">
-        <label>Имя:
-            <input type="text" name="name" required />
-        </label>
-        <label>Возраст:
-            <input type="number" name="age" min="18" max="99" required />
-        </label>
-        <label>Город:
-            <input type="text" name="city" required />
-        </label>
-        <label>Интересы:
-            <input type="text" name="interests" placeholder="Музыка, спорт, кино..." />
-        </label>
-        <label>Описание:
-            <textarea name="about" rows="4" placeholder="Расскажи немного о себе..."></textarea>
-        </label>
-        <label>Аватарка:
-            <input type="file" name="photo" accept="image/*" onchange="previewPhoto(event)" />
-            <img id="photoPreview" class="preview-img" style="display: none;" />
-        </label>
-        <button type="submit">Сохранить анкету</button>
-    </form>
-</div>
+<form method="POST" enctype="multipart/form-data">
+    {{ form.hidden_tag() }}
+    <label>{{ form.name.label }} {{ form.name() }}</label><br>
+
+    <label>{{ form.gender.label }} {{ form.gender() }}</label><br>
+
+    <label>{{ form.birthdate.label }} {{ form.birthdate() }}</label><br>
+
+    <label>Country {{ form.country(id='country') }}</label><br>
+
+    <label>City {{ form.city(id='city') }}</label><br>
+
+    <label>{{ form.interests.label }} {{ form.interests() }}</label><br>
+    <label>{{ form.about.label }} {{ form.about() }}</label><br>
+
+    <label>{{ form.photo.label }} {{ form.photo(id='photo') }}</label><br>
+    <img id="photo-preview" style="max-height: 150px; display:none;"><br>
+
+    {{ form.submit() }}
+</form>
 
 <script>
-    function previewPhoto(event) {
-        const input = event.target;
-        const preview = document.getElementById('photoPreview');
-        if (input.files && input.files[0]) {
-            const reader = new FileReader();
-            reader.onload = function (e) {
-                preview.src = e.target.result;
-                preview.style.display = 'block';
-            };
-            reader.readAsDataURL(input.files[0]);
-        }
-    }
+    document.addEventListener('DOMContentLoaded', () => {
+        const countrySelect = document.getElementById('country');
+        const citySelect = document.getElementById('city');
+        const photoInput = document.getElementById('photo');
+        const preview = document.getElementById('photo-preview');
+
+        // 1. Подгружаем страны с restcountries
+        fetch('https://restcountries.com/v3.1/all')
+            .then(res => res.json())
+            .then(data => {
+                data.sort((a, b) => a.name.common.localeCompare(b.name.common));
+                data.forEach(country => {
+                    const option = document.createElement('option');
+                    option.value = country.cca2; // ISO Alpha-2
+                    option.textContent = country.name.common;
+                    countrySelect.appendChild(option);
+                });
+            });
+
+        // 2. Загружаем города при выборе страны
+        countrySelect.addEventListener('change', () => {
+            const countryCode = countrySelect.value;
+            citySelect.innerHTML = '<option>Loading...</option>';
+
+            fetch(`https://wft-geo-db.p.rapidapi.com/v1/geo/countries/${countryCode}/cities?limit=20&sort=-population`, {
+                method: 'GET',
+                headers: {
+                    'X-RapidAPI-Key': '⚠️_YOUR_API_KEY_HERE_⚠️',
+                    'X-RapidAPI-Host': 'wft-geo-db.p.rapidapi.com'
+                }
+            })
+                .then(response => response.json())
+                .then(data => {
+                    citySelect.innerHTML = '';
+                    data.data.forEach(city => {
+                        const option = document.createElement('option');
+                        option.value = city.name;
+                        option.textContent = city.name;
+                        citySelect.appendChild(option);
+                    });
+                })
+                .catch(err => {
+                    citySelect.innerHTML = '<option>Error loading</option>';
+                    console.error(err);
+                });
+        });
+
+        // 3. Предпросмотр фото
+        photoInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (evt) => {
+                    preview.src = evt.target.result;
+                    preview.style.display = 'block';
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+    });
 </script>
