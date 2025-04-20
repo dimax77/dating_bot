@@ -1,6 +1,7 @@
 # app/__init__.py
 from flask import Flask
 from app.routes import main
+from app.api.geo import geo
 from app.db.init_db import init_db
 import os, sys
 
@@ -27,6 +28,8 @@ def create_app():
 
     app.secret_key = 'supersecretkey'
     app.register_blueprint(main)
+    app.register_blueprint(geo)
+
 
     # Вызов init_db после создания app
     with app.app_context():

@@ -6,46 +6,35 @@ document.addEventListener('DOMContentLoaded', () => {
     const photoInput = document.getElementById('photo');
     const preview = document.getElementById('photo-preview');
 
-    // Fetch country list on page load
-    fetch('https://countriesnow.space/api/v0.1/countries/positions')
+
+    fetch('/geo/countries')
         .then(res => res.json())
-        .then(data => {
-            const countries = data.data;
-            countries.sort((a, b) => a.name.localeCompare(b.name));
+        .then(countries => {
             countries.forEach(country => {
                 const option = document.createElement('option');
-                option.value = country.name;
-                option.textContent = country.name;
+                option.value = country;
+                option.textContent = country;
                 countrySelect.appendChild(option);
             });
         })
-        .catch(error => {
-            console.error('Failed to load country list:', error);
-        });
+        .catch(error => console.error('Failed to load country list:', error));
 
-    // Load cities when a country is selected
     countrySelect.addEventListener('change', () => {
         const selectedCountry = countrySelect.value;
         citySelect.innerHTML = '<option>Loading...</option>';
 
         if (selectedCountry) {
-            fetch('https://countriesnow.space/api/v0.1/countries/cities', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ country: selectedCountry })
-            })
+            fetch(`/geo/cities/${encodeURIComponent(selectedCountry)}`)
                 .then(res => res.json())
-                .then(data => {
-                    citySelect.innerHTML = ''; // Clear existing options
-                    data.data.forEach(city => {
+                .then(cities => {
+                    citySelect.innerHTML = '';
+                    cities.forEach(city => {
                         const option = document.createElement('option');
                         option.value = city;
                         option.textContent = city;
                         citySelect.appendChild(option);
                     });
-                    citySelect.disabled = false; // Enable city dropdown after fetching cities
+                    citySelect.disabled = false;
                 })
                 .catch(err => {
                     console.error('Error loading cities:', err);
@@ -54,6 +43,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
         }
     });
+
 
     // Photo preview logic
     photoInput.addEventListener('change', (e) => {
