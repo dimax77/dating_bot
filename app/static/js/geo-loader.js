@@ -14,6 +14,7 @@ document.addEventListener('DOMContentLoaded', () => {
         .then(countries => {
             console.log('Countries received:', countries);
             countrySelect.innerHTML = '<option value="">Select a country</option>';
+            console.log('countrySelect is:', countrySelect);
 
             countries.forEach(country => {
                 const option = document.createElement('option');
