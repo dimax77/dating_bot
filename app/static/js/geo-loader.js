@@ -12,6 +12,8 @@ document.addEventListener('DOMContentLoaded', () => {
     fetch('/geo/countries')
         .then(res => res.json())
         .then(countries => {
+            console.log('Countries received:', countries);
+
             countries.forEach(country => {
                 const option = document.createElement('option');
                 option.value = country;
