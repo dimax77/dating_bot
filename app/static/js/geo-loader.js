@@ -1,48 +1,70 @@
+// app/static/js/geo-loader.js
+
 document.addEventListener('DOMContentLoaded', () => {
     const countrySelect = document.getElementById('country');
     const citySelect = document.getElementById('city');
+    const photoInput = document.getElementById('photo');
+    const preview = document.getElementById('photo-preview');
 
-    const RAPID_API_KEY = 'YOUR_REAL_API_KEY_HERE';  // вставь сюда ключ
-    const RAPID_API_HOST = 'wft-geo-db.p.rapidapi.com';
-
-    // Загрузка стран
-    fetch('https://restcountries.com/v3.1/all')
+    // Fetch country list on page load
+    fetch('https://countriesnow.space/api/v0.1/countries/positions')
         .then(res => res.json())
         .then(data => {
-            data.sort((a, b) => a.name.common.localeCompare(b.name.common));
-            data.forEach(country => {
+            const countries = data.data;
+            countries.sort((a, b) => a.name.localeCompare(b.name));
+            countries.forEach(country => {
                 const option = document.createElement('option');
-                option.value = country.cca2;
-                option.textContent = country.name.common;
+                option.value = country.name;
+                option.textContent = country.name;
                 countrySelect.appendChild(option);
             });
+        })
+        .catch(error => {
+            console.error('Failed to load country list:', error);
         });
 
-    // При выборе страны загружаем города
+    // Load cities when a country is selected
     countrySelect.addEventListener('change', () => {
-        const countryCode = countrySelect.value;
+        const selectedCountry = countrySelect.value;
         citySelect.innerHTML = '<option>Loading...</option>';
 
-        fetch(`https://wft-geo-db.p.rapidapi.com/v1/geo/countries/${countryCode}/cities?limit=20&sort=-population`, {
-            method: 'GET',
-            headers: {
-                'X-RapidAPI-Key': RAPID_API_KEY,
-                'X-RapidAPI-Host': RAPID_API_HOST
-            }
-        })
-            .then(response => response.json())
-            .then(data => {
-                citySelect.innerHTML = '';
-                data.data.forEach(city => {
-                    const option = document.createElement('option');
-                    option.value = city.name;
-                    option.textContent = city.name;
-                    citySelect.appendChild(option);
-                });
+        if (selectedCountry) {
+            fetch('https://countriesnow.space/api/v0.1/countries/cities', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ country: selectedCountry })
             })
-            .catch(err => {
-                console.error('Error loading cities:', err);
-                citySelect.innerHTML = '<option>Error loading</option>';
-            });
+                .then(res => res.json())
+                .then(data => {
+                    citySelect.innerHTML = ''; // Clear existing options
+                    data.data.forEach(city => {
+                        const option = document.createElement('option');
+                        option.value = city;
+                        option.textContent = city;
+                        citySelect.appendChild(option);
+                    });
+                    citySelect.disabled = false; // Enable city dropdown after fetching cities
+                })
+                .catch(err => {
+                    console.error('Error loading cities:', err);
+                    citySelect.innerHTML = '<option>Error loading cities</option>';
+                    citySelect.disabled = true;
+                });
+        }
+    });
+
+    // Photo preview logic
+    photoInput.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = (evt) => {
+                preview.src = evt.target.result;
+                preview.style.display = 'block';
+            };
+            reader.readAsDataURL(file);
+        }
     });
 });
