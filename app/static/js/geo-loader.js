@@ -1,5 +1,7 @@
 // app/static/js/geo-loader.js
 
+console.log("GEO JS LOADED");
+
 document.addEventListener('DOMContentLoaded', () => {
     const countrySelect = document.getElementById('country');
     const citySelect = document.getElementById('city');
