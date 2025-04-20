@@ -1,6 +1,6 @@
 # app/routes.py
 
-from flask import Blueprint, render_template, request, session, jsonify
+from flask import Blueprint, render_template, request, session, jsonify, redirect, url_for
 import os
 import sqlite3
 
@@ -31,7 +31,7 @@ def index():
                 cur.execute('''
                     SELECT COUNT(*) FROM messages
                     WHERE receiver_id = ? AND read IS NULL
-                ''')
+                ''', (user_id,))
 
                 unread_count = cur.fetchone()[0]
                 conn.close()
@@ -73,9 +73,7 @@ def create_profile():
         interests = request.form['interests']
         about = request.form['about']
         photo = request.files.get('photo')
-        # telegram_id = request.args.get('id')  # если мы получаем id через query params из Telegram
-        telegram_id = session.get('user_id')  # корректно получаем из сессии
-
+        telegram_id = session.get('user_id')
 
         filename = None
         if photo and photo.filename:
@@ -83,7 +81,6 @@ def create_profile():
             filename = secure_filename(photo.filename)
             photo.save(os.path.join(UPLOAD_FOLDER, filename))
 
-        # 💾 сохраняем профиль
         conn = sqlite3.connect(DB_PATH)
         cur = conn.cursor()
         cur.execute('''
@@ -92,8 +89,10 @@ def create_profile():
         ''', (name, age, city, interests, about, filename, telegram_id))
         conn.commit()
         conn.close()
-        return render_template('base.html', content_template='fragments/home.html', message="Анкета успешно создана!")
-        # return redirect(url_for('main.index'))
+
+        # ✅ Перенаправляем, где index сам разрулит user
+        return redirect(url_for('main.index'))
+
     return render_template('base.html', content_template='fragments/create_profile.html')
 
 
