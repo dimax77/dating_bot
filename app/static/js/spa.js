@@ -78,7 +78,7 @@ async function navigateTo(url) {
         currentPath = url;
         history.pushState(null, null, url);
         await loadPage(url);
-        if (window.location.pathname.startsWith("/create-profile")) {
+        if (window.location.pathname.startsWith("/create_profile")) {
             console.log("GOT YA! Window.LocationPathname: ", window.location.pathname)
 
             import("/static/js/geo-loader.js").then(({ initGeoLoader }) => {
