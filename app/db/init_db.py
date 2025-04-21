@@ -1,7 +1,8 @@
+# app/db/init_db.py
+
 import sqlite3
 import os
 
-DB_PATH = 'data/app.db'
 
 def init_db():
     # Ensure the directory for the DB exists
