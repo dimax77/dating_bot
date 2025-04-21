@@ -16,13 +16,15 @@ def init_db():
     c.execute('''
     CREATE TABLE IF NOT EXISTS users (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        telegram_id TEXT,
         name TEXT,
-        age INTEGER,
         gender TEXT,
+        birthdate DATE,
+        country TEXT,
         city TEXT,
-        description TEXT,
-        photo_url TEXT
+        interests TEXT,
+        about TEXT,
+        photo TEXT,
+        telegram_id TEXT
     )
     ''')
 

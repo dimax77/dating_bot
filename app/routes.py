@@ -85,7 +85,7 @@ def create_profile():
         conn = sqlite3.connect(DB_PATH)
         cur = conn.cursor()
         cur.execute('''
-            INSERT INTO profiles (name, gender, birthdate, country, city, interests, about, photo, telegram_id)
+            INSERT INTO users (name, gender, birthdate, country, city, interests, about, photo, telegram_id)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
         ''', (
             form.name.data,
