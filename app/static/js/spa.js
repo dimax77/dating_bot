@@ -81,7 +81,14 @@ async function navigateTo(url) {
         console.log("Window.LocationPathname: ", window.location.pathname)
         if (window.location.pathname.startsWith("/create-profile")) {
             import("/static/js/geo-loader.js").then(({ initGeoLoader }) => {
-                setTimeout(() => initGeoLoader(), 10);
+                // setTimeout(() => initGeoLoader(), 10);
+                setTimeout(() => {
+                    if (document.getElementById("country")) {
+                        initGeoLoader();
+                    } else {
+                        console.warn("Элемент country не найден при initGeoLoader");
+                    }
+                }, 0);
             }).catch(err => {
                 console.error("Failed to load geo-loader:", err);
             });
