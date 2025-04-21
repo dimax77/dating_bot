@@ -4,7 +4,6 @@ from app.routes import main
 from app.api.geo import geo
 from app.db.init_db import init_db
 import os, sys
-
 import logging
 
 
