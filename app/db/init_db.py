@@ -42,15 +42,15 @@ def init_db():
 
     # If you need to update the 'profiles' table (and it already exists), use ALTER TABLE
     # Check for the 'profiles' table existence and apply ALTER only if necessary
-    try:
-        c.execute('PRAGMA foreign_keys=off;')  # Temporarily disable foreign key checks for ALTER operations
-        c.execute('''
-        ALTER TABLE profiles ADD COLUMN gender TEXT;
-        ALTER TABLE profiles ADD COLUMN birthdate DATE;
-        ALTER TABLE profiles ADD COLUMN country TEXT;
-        ''')
-    except sqlite3.OperationalError:
-        pass  # If 'profiles' doesn't exist, or columns are already added, this will safely pass
+    # try:
+    #     c.execute('PRAGMA foreign_keys=off;')  # Temporarily disable foreign key checks for ALTER operations
+    #     c.execute('''
+    #     ALTER TABLE profiles ADD COLUMN gender TEXT;
+    #     ALTER TABLE profiles ADD COLUMN birthdate DATE;
+    #     ALTER TABLE profiles ADD COLUMN country TEXT;
+    #     ''')
+    # except sqlite3.OperationalError:
+    #     pass  # If 'profiles' doesn't exist, or columns are already added, this will safely pass
 
     # Commit changes and close connection
     conn.commit()
