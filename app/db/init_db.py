@@ -2,7 +2,7 @@
 
 import sqlite3
 import os
-
+from app.db import DB_PATH
 
 def init_db():
     # Ensure the directory for the DB exists
