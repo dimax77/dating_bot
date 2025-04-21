@@ -4,6 +4,8 @@ console.log("GEO JS LOADED");
 
 // document.addEventListener('DOMContentLoaded', () => {
 export function initGeoLoader() {
+    console.log("initGeoLoader: countrySelect:", document.getElementById('country'));
+
     const countrySelect = document.getElementById('country');
     const citySelect = document.getElementById('city');
     const photoInput = document.getElementById('photo');
@@ -64,4 +66,4 @@ export function initGeoLoader() {
             reader.readAsDataURL(file);
         }
     });
-});
+};
