@@ -77,6 +77,19 @@ background: #0056b3;
     {{ form.submit() }}
 </form>
 
+{#
+<div class="form-group">
+    <label>Country {{ form.country(id='country') }}</label>
+</div>
+#}
+
+{#
+<div class="form-group">
+    <label>City {{ form.city(id='city', disabled=True) }}</label>
+</div>
+#}
+
+
 <script src="{{ url_for('static', filename='js/geo-loader.js') }}"></script>
 <script>
     document.addEventListener('DOMContentLoaded', () => {
