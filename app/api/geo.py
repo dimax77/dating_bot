@@ -2,11 +2,15 @@
 from flask import Blueprint, jsonify, current_app
 import json
 import os
+import logging
 
 geo = Blueprint('geo', __name__)
 
+logger = logging.getLogger()
+
 @geo.route('/geo/countries')
 def get_countries():
+    logger.debug("Requested route '/geo/countries'")
     with open(os.path.join(current_app.static_folder, 'data/countries.json')) as f:
         data = json.load(f)
         countries = sorted([entry['country'] for entry in data])
