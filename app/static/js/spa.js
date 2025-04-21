@@ -1,5 +1,4 @@
 // app/static/js/spa.js
-import { initGeoLoader } from "./geo-loader";
 
 const STORAGE_KEY = 'navStack';
 let navStack = JSON.parse(sessionStorage.getItem(STORAGE_KEY)) || [];
@@ -64,7 +63,6 @@ async function loadPage(url) {
 
         document.getElementById("content").innerHTML = newContent.innerHTML;
         window.scrollTo(0, 0);
-        if (url == '/create_profile.html') initGeoLoader();
     } catch (err) {
         console.error("Ошибка загрузки страницы:", err);
         document.getElementById("content").innerHTML = "<p>Ошибка загрузки страницы.</p>";
@@ -80,6 +78,13 @@ async function navigateTo(url) {
         currentPath = url;
         history.pushState(null, null, url);
         await loadPage(url);
+        if (window.location.pathname === "/create-profile") {
+            import("/static/js/geo-loader.js").then(({ initGeoLoader }) => {
+                initGeoLoader();
+            }).catch(err => {
+                console.error("Failed to load geo-loader:", err);
+            });
+        }
         persistStack();
         updateBackButton();
     }
