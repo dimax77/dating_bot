@@ -2,7 +2,8 @@
 
 console.log("GEO JS LOADED");
 
-document.addEventListener('DOMContentLoaded', () => {
+// document.addEventListener('DOMContentLoaded', () => {
+export function initGeoLoader() {
     const countrySelect = document.getElementById('country');
     const citySelect = document.getElementById('city');
     const photoInput = document.getElementById('photo');

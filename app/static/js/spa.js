@@ -1,4 +1,5 @@
 // app/static/js/spa.js
+import { initGeoLoader } from "./geo-loader";
 
 const STORAGE_KEY = 'navStack';
 let navStack = JSON.parse(sessionStorage.getItem(STORAGE_KEY)) || [];
@@ -50,6 +51,7 @@ function hideLoader() {
 
 // Загрузка и отображение страницы
 async function loadPage(url) {
+    console.log("Requsted URL: ", url)
     showLoader();
     try {
         const response = await fetch(url);
@@ -62,6 +64,7 @@ async function loadPage(url) {
 
         document.getElementById("content").innerHTML = newContent.innerHTML;
         window.scrollTo(0, 0);
+        if (url == '/create_profile.html') initGeoLoader();
     } catch (err) {
         console.error("Ошибка загрузки страницы:", err);
         document.getElementById("content").innerHTML = "<p>Ошибка загрузки страницы.</p>";
