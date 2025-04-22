@@ -101,7 +101,7 @@ def create_profile():
         conn.commit()
         conn.close()
 
-        return redirect(url_for('main.index'))
+        return redirect(url_for('main.index'), message="Профиль создан!")
 
     return render_template('base.html', content_template='fragments/create_profile.html', form=form)
 
@@ -133,7 +133,9 @@ def edit_profile():
         ''', (name, gender, birthdate, country, city, interests, about, filename, telegram_id))
         conn.commit()
         conn.close()
-        return render_template('base.html', content_template='fragments/home.html', message="Профиль обновлён!")
+        return redirect(url_for('main.index'), message="Профиль обновлён!")
+
+        # return render_template('base.html', content_template='fragments/home.html', message="Профиль обновлён!")
     
     cur.execute('SELECT * FROM users WHERE telegram_id=?', (telegram_id,))
     row = cur.fetchone()
