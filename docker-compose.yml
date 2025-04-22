@@ -8,6 +8,8 @@ services:
     container_name: dating_web
     expose:
       - "5000"
+    env_file:
+      - .env
     volumes:
       - ./app:/app/app
       - ./data:/app/data
