@@ -7,7 +7,7 @@ import sqlite3
 
 from werkzeug.utils import secure_filename
 
-DB_PATH = 'data/profiles.db'
+DB_PATH = 'data/dating_bot.db'
 
 main = Blueprint('main', __name__)
 UPLOAD_FOLDER = 'static/uploads'
