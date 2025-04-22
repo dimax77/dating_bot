@@ -18,7 +18,7 @@ def index():
     user = None
     unread_count = 0
     user_id = session.get('user_id')
-    current_app.logger.info("Index Route. User_Id: ", user_id)
+    current_app.logger.info("Index Route. User_Id: %s", user_id)
 
     if user_id:
         try:
