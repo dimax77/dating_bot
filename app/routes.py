@@ -26,12 +26,15 @@ def index():
             if user_data:
                 user = dict(user_data)
                 unread_count = get_unread_messages_count(user_id)
-            # else:
-            #     # If user doesn't exist, clear session and redirect
-            #     # session.clear()  # Remove all session data
-            #     session.pop("user_id", None)
-            #     flash("Your account no longer exists. Please log in again.", "warning")
-            #     return redirect(url_for("main.index"))
+            else:
+                # If user doesn't exist, clear session and redirect
+                # session.clear()  # Remove all session data
+                # session.pop("user_id", None)
+                # flash("Your account no longer exists. Please log in again.", "warning")
+                # return redirect(url_for("main.index"))
+                return render_template('base.html',
+                           content_template="fragments/intro.html",
+                           body_class="welcome")
         except Exception as e:
             current_app.logger.error(f"Ошибка при получении данных: {e}")
             flash("Ошибка сервера. Попробуйте позже.")
