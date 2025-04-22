@@ -57,6 +57,12 @@ def auth():
 
 @main.route('/create_profile', methods=['GET', 'POST'])
 def create_profile():
+    telegram_id = session.get('user_id')
+    if not telegram_id:
+        current_app.logger.warning("No telegram_id in session!")
+    else:
+        current_app.logger.info(f"Using telegram_id from session: {telegram_id}")
+
     form = ProfileForm()
 
     if request.method == 'POST' and form.validate_on_submit():
