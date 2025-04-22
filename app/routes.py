@@ -157,9 +157,9 @@ def search_profiles():
     conn = sqlite3.connect(DB_PATH)
     cur = conn.cursor()
     if city:
-        cur.execute('SELECT * FROM profiles WHERE city LIKE ?', (f'%{city}%',))
+        cur.execute('SELECT * FROM users WHERE city LIKE ?', (f'%{city}%',))
     else:
-        cur.execute('SELECT * FROM profiles')
+        cur.execute('SELECT * FROM users')
     rows = cur.fetchall()
     profiles = [dict(zip(['id', 'name', 'age', 'city', 'interests', 'about', 'photo', 'telegram_id'], row)) for row in rows]
     conn.close()
