@@ -1,6 +1,6 @@
 # app/routes.py
 
-from flask import Blueprint, render_template, request, session, jsonify, redirect, url_for
+from flask import Blueprint, render_template, request, session, jsonify, redirect, url_for, flash
 from app.utils.forms import ProfileForm
 import os
 import sqlite3
@@ -101,7 +101,8 @@ def create_profile():
         conn.commit()
         conn.close()
 
-        return redirect(url_for('main.index'), message="Профиль создан!")
+        flash("Профиль создан!")
+        return redirect(url_for('main.index'))
 
     return render_template('base.html', content_template='fragments/create_profile.html', form=form)
 
@@ -133,9 +134,8 @@ def edit_profile():
         ''', (name, gender, birthdate, country, city, interests, about, filename, telegram_id))
         conn.commit()
         conn.close()
-        return redirect(url_for('main.index'), message="Профиль обновлён!")
-
-        # return render_template('base.html', content_template='fragments/home.html', message="Профиль обновлён!")
+        flash("Профиль обновлён!")
+        return redirect(url_for('main.index'))
     
     cur.execute('SELECT * FROM users WHERE telegram_id=?', (telegram_id,))
     row = cur.fetchone()
@@ -153,7 +153,8 @@ def delete_profile():
     cur.execute('DELETE FROM users WHERE telegram_id=?', (telegram_id,))
     conn.commit()
     conn.close()
-    return render_template('base.html', content_template='fragments/home.html', message="Профиль удалён!")
+    flash("Профиль удалён!")
+    return redirect(url_for('main.index'))
 
 
 @main.route('/search')
