@@ -4,6 +4,7 @@ from flask import Blueprint, render_template, request, session, jsonify, redirec
 from app.utils.forms import ProfileForm
 import os
 import sqlite3
+from app.db.db import get_user_by_telegram_id, get_unread_messages_count
 
 from werkzeug.utils import secure_filename
 
@@ -20,40 +21,25 @@ def index():
 
     if user_id:
         try:
-            conn = sqlite3.connect(DB_PATH)
-            cur = conn.cursor()
-
-            cur.execute("SELECT * FROM users WHERE telegram_id = ?", (user_id,))
-            row = cur.fetchone()
-
-            if row:
-                user = dict(zip(['id', 'name', 'age', 'city', 'interests', 'about', 'photo', 'telegram_id'], row))
-
-                cur.execute('''
-                    SELECT COUNT(*) FROM messages
-                    WHERE receiver_id = ? AND read IS NULL
-                    ''', (user_id,))
-
-                unread_count = cur.fetchone()[0]
-                
-        except sqlite3.Error as e:
-            current_app.logger.error(f"Ошибка SQLite: {e}")
+            user_data = get_user_by_telegram_id(user_id)
+            if user_data:
+                user = dict(user_data)
+                unread_count = get_unread_messages_count(user_id)
+        except Exception as e:
+            current_app.logger.error(f"Ошибка при получении данных: {e}")
             flash("Ошибка сервера. Попробуйте позже.")
             return redirect(url_for("main.index"))
         
-        finally:
-            if conn:
-                conn.close()
-
         return render_template('base.html',
-                           content_template="fragments/home.html",
-                           user = user,
-                           unread_count = unread_count,
-                           body_class="welcome")
+                               content_template="fragments/home.html",
+                               user=user,
+                               unread_count=unread_count,
+                               body_class="welcome")
 
     return render_template('base.html',
-                                content_template="fragments/intro.html",
-                                body_class="welcome")
+                           content_template="fragments/intro.html",
+                           body_class="welcome")
+
 
 
     
