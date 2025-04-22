@@ -213,23 +213,3 @@ def dialog(user_id):
     conn.close()
 
     return render_template('base.html', content_template='fragments/dialog.html', messages=messages, user_id=user_id)
-
-# def init_db():
-#     os.makedirs(os.path.dirname(DB_PATH), exist_ok=True)
-#     conn = sqlite3.connect(DB_PATH)
-#     cur = conn.cursor()
-#     cur.execute('''
-#         CREATE TABLE IF NOT EXISTS profiles (
-#             id INTEGER PRIMARY KEY AUTOINCREMENT,
-#             name TEXT,
-#             age INTEGER,
-#             city TEXT,
-#             interests TEXT,
-#             about TEXT,
-#             photo TEXT,
-#             telegram_id INTEGER
-#         )
-#     ''')
-#     conn.commit()
-#     conn.close()
-
