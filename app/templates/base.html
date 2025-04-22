@@ -25,6 +25,14 @@
     </main>
     <div id="loader" style="display:none;">Загрузка...</div>
 
+    <script>
+        const tg = window.Telegram.WebApp;
+        if (tg) {
+            tg.ready();
+            tg.expand();
+        }
+    </script>
+
 
 </body>
 
