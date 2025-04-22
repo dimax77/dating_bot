@@ -1,31 +1,56 @@
 <!-- app/templates/fragments/edit_profile.html -->
+ <!-- 
+'name', 'gender', 'birthdate', 'country', 'city', 'interests', 'about', 'photo', 'telegram_id'
+ -->
 <div class="container">
     <h2>Редактировать анкету</h2>
-    <form action="/edit_profile" method="post" enctype="multipart/form-data">
-        <label>Имя:
-            <input type="text" name="name" value="{{ profile.name }}" required />
-        </label>
-        <label>Возраст:
-            <input type="number" name="age" value="{{ profile.age }}" required />
-        </label>
-        <label>Город:
-            <input type="text" name="city" value="{{ profile.city }}" required />
-        </label>
-        <label>Интересы:
-            <input type="text" name="interests" value="{{ profile.interests }}" />
-        </label>
-        <label>Описание:
-            <textarea name="about">{{ profile.about }}</textarea>
-        </label>
-        <label>Фото:
-            <input type="file" name="photo" accept="image/*" />
-            {% if profile.photo %}
-            <img src="/static/uploads/{{ profile.photo }}" class="preview-img" />
-            {% endif %}
-        </label>
-        <button type="submit">💾 Сохранить</button>
+    <form action="{{ url_for('edit_profile') }}" method="POST" enctype="multipart/form-data">
+        <div>
+            <label for="name">Имя</label>
+            <input type="text" id="name" name="name" value="{{ profile.get('name', '') }}" required>
+        </div>
+    
+        <div>
+            <label for="gender">Пол</label>
+            <select id="gender" name="gender" required>
+                <option value="male" {% if profile.get('gender')=='male' %}selected{% endif %}>Мужской</option>
+                <option value="female" {% if profile.get('gender')=='female' %}selected{% endif %}>Женский</option>
+            </select>
+        </div>
+    
+        <div>
+            <label for="birthdate">Дата рождения</label>
+            <input type="date" id="birthdate" name="birthdate" value="{{ profile.get('birthdate', '') }}" required>
+        </div>
+    
+        <div>
+            <label for="country">Страна</label>
+            <input type="text" id="country" name="country" value="{{ profile.get('country', '') }}" required>
+        </div>
+    
+        <div>
+            <label for="city">Город</label>
+            <input type="text" id="city" name="city" value="{{ profile.get('city', '') }}" required>
+        </div>
+    
+        <div>
+            <label for="interests">Интересы</label>
+            <textarea id="interests" name="interests" required>{{ profile.get('interests', '') }}</textarea>
+        </div>
+    
+        <div>
+            <label for="about">О себе</label>
+            <textarea id="about" name="about" required>{{ profile.get('about', '') }}</textarea>
+        </div>
+    
+        <div>
+            <label for="photo">Фото</label>
+            <input type="file" id="photo" name="photo">
+        </div>
+    
+        <div>
+            <button type="submit">Сохранить изменения</button>
+        </div>
     </form>
-    <form action="/delete_profile" method="post" onsubmit="return confirm('Удалить профиль?')">
-        <button type="submit" class="danger">🗑️ Удалить профиль</button>
-    </form>
+
 </div>

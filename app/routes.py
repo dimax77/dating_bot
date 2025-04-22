@@ -107,7 +107,7 @@ def create_profile():
 
 @main.route('/edit_profile', methods=['GET', 'POST'])
 def edit_profile():
-    telegram_id = request.args.get('id')  # временно, потом заменим на сессию
+    telegram_id = session.get('user_id')
     conn = sqlite3.connect(DB_PATH)
     cur = conn.cursor()
 
@@ -136,7 +136,7 @@ def edit_profile():
     row = cur.fetchone()
     conn.close()
 
-    profile = dict(zip(['id', 'name', 'age', 'city', 'interests', 'about', 'photo', 'telegram_id'], row)) if row else {}
+    profile = dict(zip(['name', 'gender', 'birthdate', 'country', 'city', 'interests', 'about', 'photo', 'telegram_id'], row)) if row else {}
     return render_template('base.html', content_template='fragments/edit_profile.html', profile=profile)
 
 
