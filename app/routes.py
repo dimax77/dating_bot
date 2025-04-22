@@ -136,7 +136,7 @@ def edit_profile():
     row = cur.fetchone()
     conn.close()
 
-    profile = dict(zip(['name', 'gender', 'birthdate', 'country', 'city', 'interests', 'about', 'photo', 'telegram_id'], row)) if row else {}
+    profile = dict(zip(['id', 'name', 'gender', 'birthdate', 'country', 'city', 'interests', 'about', 'photo', 'telegram_id'], row)) if row else {}
     return render_template('base.html', content_template='fragments/edit_profile.html', profile=profile)
 
 
