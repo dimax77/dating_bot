@@ -22,7 +22,7 @@ def index():
         conn = sqlite3.connect(DB_PATH)
         cur = conn.cursor()
 
-        cur.execute("SELECT * FROM profiles WHERE telegram_id = ?", (user_id,))
+        cur.execute("SELECT * FROM users WHERE telegram_id = ?", (user_id,))
         row = cur.fetchone()
 
         if row:
@@ -132,7 +132,7 @@ def edit_profile():
         conn.close()
         return render_template('base.html', content_template='fragments/home.html', message="Профиль обновлён!")
     
-    cur.execute('SELECT * FROM profiles WHERE telegram_id=?', (telegram_id,))
+    cur.execute('SELECT * FROM users WHERE telegram_id=?', (telegram_id,))
     row = cur.fetchone()
     conn.close()
 
@@ -145,7 +145,7 @@ def delete_profile():
     telegram_id = request.args.get('id')
     conn = sqlite3.connect(DB_PATH)
     cur = conn.cursor()
-    cur.execute('DELETE FROM profiles WHERE telegram_id=?', (telegram_id,))
+    cur.execute('DELETE FROM users WHERE telegram_id=?', (telegram_id,))
     conn.commit()
     conn.close()
     return render_template('base.html', content_template='fragments/home.html', message="Профиль удалён!")
