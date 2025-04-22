@@ -2,9 +2,54 @@
 <div class="container">
     <h2>Поиск анкет</h2>
     <form method="get" action="/search">
-        <label>Город:
-            <input type="text" name="city" />
+        <!-- Country Dropdown -->
+        <label for="country">Страна:
+            <select id="country" name="country" required>
+                <option value="">Выберите страну</option>
+                <!-- Country options will be loaded dynamically -->
+            </select>
         </label>
+
+        <!-- City Dropdown -->
+        <label for="city">Город:
+            <select id="city" name="city" required disabled>
+                <option value="">Выберите город</option>
+                <!-- City options will be loaded dynamically based on country -->
+            </select>
+        </label>
+
+        <!-- Gender Dropdown -->
+        <label for="gender">Пол:
+            <select name="gender">
+                <option value="">Не важно</option>
+                <option value="male">Мужской</option>
+                <option value="female">Женский</option>
+            </select>
+        </label>
+
+        <!-- Age Range Dropdowns -->
+        <label for="min_age">Возраст от:
+            <select name="min_age">
+                <option value="18" selected>18</option>
+                <option value="20">20</option>
+                <option value="25">25</option>
+                <option value="30">30</option>
+                <option value="35">35</option>
+                <option value="40">40</option>
+            </select>
+        </label>
+
+        <label for="max_age">Возраст до:
+            <select name="max_age">
+                <option value="30" selected>30</option>
+                <option value="35">35</option>
+                <option value="40">40</option>
+                <option value="45">45</option>
+                <option value="50">50</option>
+                <option value="60">60</option>
+            </select>
+        </label>
+
         <button type="submit">🔍 Найти</button>
     </form>
 
@@ -22,3 +67,5 @@
         {% endfor %}
     </div>
 </div>
+
+<script src="{{ url_for('static', filename='js/geo-loader.js') }}" defer></script>

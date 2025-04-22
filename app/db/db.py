@@ -35,3 +35,94 @@ def get_unread_messages_count(user_id):
         cur.execute(query, (user_id,))
         count = cur.fetchone()[0]
     return count
+
+def create_user_profile(form_data, telegram_id, filename=None):
+    """Create a new user profile in the database."""
+    query = '''
+    INSERT INTO users (name, gender, birthdate, country, city, interests, about, photo, telegram_id)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+    '''
+    with get_db_connection() as conn:
+        cur = conn.cursor()
+        cur.execute(query, (
+            form_data['name'],
+            form_data['gender'],
+            form_data['birthdate'].strftime('%Y-%m-%d'),
+            form_data['country'],
+            form_data['city'],
+            form_data['interests'],
+            form_data['about'],
+            filename,
+            telegram_id
+        ))
+        conn.commit()
+    
+def update_user_profile(telegram_id, form_data, filename=None):
+    """Update the user profile in the database."""
+    query = '''
+    UPDATE users
+    SET name = ?, gender = ?, birthdate = ?, country = ?, city = ?, interests = ?, about = ?, photo = ?
+    WHERE telegram_id = ?
+    '''
+    with get_db_connection() as conn:
+        cur = conn.cursor()
+        cur.execute(query, (
+            form_data['name'],
+            form_data['gender'],
+            form_data['birthdate'].strftime('%Y-%m-%d'),
+            form_data['country'],
+            form_data['city'],
+            form_data['interests'],
+            form_data['about'],
+            filename,
+            telegram_id
+        ))
+        conn.commit()
+
+def delete_user_profile(telegram_id):
+    """Delete the user profile from the database."""
+    query = "DELETE FROM users WHERE telegram_id = ?"
+    with get_db_connection() as conn:
+        cur = conn.cursor()
+        cur.execute(query, (telegram_id,))
+        conn.commit()
+
+def search_profiles_by_filters(country, city, gender, min_age, max_age):
+    """Search for user profiles based on filters."""
+    query = "SELECT * FROM users WHERE 1=1"
+    params = []
+
+    if country:
+        query += " AND country LIKE ?"
+        params.append(f"%{country}%")
+
+    if city:
+        query += " AND city LIKE ?"
+        params.append(f"%{city}%")
+
+    if gender:
+        query += " AND gender = ?"
+        params.append(gender)
+
+    if min_age:
+        query += " AND age >= ?"
+        params.append(min_age)
+
+    if max_age:
+        query += " AND age <= ?"
+        params.append(max_age)
+
+    with get_db_connection() as conn:
+        cur = conn.cursor()
+        cur.execute(query, tuple(params))
+        rows = cur.fetchall()
+    return rows
+
+def get_all_profiles():
+    """Get all user profiles."""
+    query = "SELECT * FROM users"
+    with get_db_connection() as conn:
+        cur = conn.cursor()
+        cur.execute(query)
+        rows = cur.fetchall()
+    return rows

@@ -4,8 +4,8 @@ from flask import Blueprint, render_template, request, session, jsonify, redirec
 from app.utils.forms import ProfileForm
 import os
 import sqlite3
-from app.db.db import get_user_by_telegram_id, get_unread_messages_count
-
+from app.db.db import get_user_by_telegram_id, get_unread_messages_count, create_user_profile, update_user_profile, delete_user_profile
+from app.db.db import search_profiles_by_filters, get_all_profiles
 from werkzeug.utils import secure_filename
 
 DB_PATH = 'data/dating_bot.db'
@@ -45,23 +45,15 @@ def index():
                            content_template="fragments/intro.html",
                            body_class="welcome")
 
-
-
-    
-
-
 @main.route("/auth", methods=["POST"])
 def auth():
     data = request.get_json()
     telegram_id = data.get("telegram_id")
-    
     if telegram_id:
         session["user_id"] = telegram_id
         return jsonify({"status": "ok"})
     else:
         return jsonify({"status": "error", "message": "No Telegram ID"}), 400
-
-
 
 @main.route('/create_profile', methods=['GET', 'POST'])
 def create_profile():
@@ -71,101 +63,118 @@ def create_profile():
         telegram_id = session.get('user_id')
         filename = None
 
+        # Save uploaded photo if it exists
         if form.photo.data:
             os.makedirs(UPLOAD_FOLDER, exist_ok=True)
             filename = secure_filename(form.photo.data.filename)
             form.photo.data.save(os.path.join(UPLOAD_FOLDER, filename))
 
-        # Сохраняем в базу (пример с SQLite)
-        from app.db import DB_PATH
-        import sqlite3
-        conn = sqlite3.connect(DB_PATH)
-        cur = conn.cursor()
-        cur.execute('''
-            INSERT INTO users (name, gender, birthdate, country, city, interests, about, photo, telegram_id)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-        ''', (
-            form.name.data,
-            form.gender.data,
-            form.birthdate.data.strftime('%Y-%m-%d'),
-            request.form.get("country"),
-            request.form.get("city"),
-            form.interests.data,
-            form.about.data,
-            filename,
-            telegram_id
-        ))
-        conn.commit()
-        conn.close()
+        # Prepare form data for insertion into the database
+        form_data = {
+            'name': form.name.data,
+            'gender': form.gender.data,
+            'birthdate': form.birthdate.data,
+            'country': request.form.get("country"),
+            'city': request.form.get("city"),
+            'interests': form.interests.data,
+            'about': form.about.data
+        }
 
-        flash("Профиль создан!")
-        return redirect(url_for('main.index'))
+        # Insert user profile into the database
+        try:
+            create_user_profile(form_data, telegram_id, filename)
+            flash("Profile created successfully!")
+            return redirect(url_for('main.index'))
+        except Exception as e:
+            flash(f"Error creating profile: {e}", "danger")
+            return redirect(url_for('main.create_profile'))
 
     return render_template('base.html', content_template='fragments/create_profile.html', form=form)
 
 @main.route('/edit_profile', methods=['GET', 'POST'])
 def edit_profile():
     telegram_id = session.get('user_id')
-    conn = sqlite3.connect(DB_PATH)
-    cur = conn.cursor()
 
-    if request.method == 'POST':
-        
-        name = request.form['name']
-        gender = request.form['gender']
-        birthdate = request.form['birthdate']
-        country = request.form['country']
-        city = request.form['city']
-        interests = request.form['interests']
-        about = request.form['about']
-        photo = request.files.get('photo')
-
-        filename = None
-        if photo and photo.filename:
-            filename = secure_filename(photo.filename)
-            photo.save(os.path.join(UPLOAD_FOLDER, filename))
-
-        cur.execute('''
-            UPDATE users SET name=?, gender=?, birthdate=?, country=?, city=?, interests=?, about=?, photo=?
-            WHERE telegram_id=?
-        ''', (name, gender, birthdate, country, city, interests, about, filename, telegram_id))
-        conn.commit()
-        conn.close()
-        flash("Профиль обновлён!")
+    # If user is not logged in, redirect to the home page
+    if not telegram_id:
+        flash("Please log in to edit your profile", "warning")
         return redirect(url_for('main.index'))
-    
-    cur.execute('SELECT * FROM users WHERE telegram_id=?', (telegram_id,))
-    row = cur.fetchone()
-    conn.close()
 
-    profile = dict(zip(['id', 'name', 'gender', 'birthdate', 'country', 'city', 'interests', 'about', 'photo', 'telegram_id'], row)) if row else {}
-    return render_template('base.html', content_template='fragments/edit_profile.html', profile=profile)
+    # Fetch the user's profile from the database
+    user_profile = get_user_by_telegram_id(telegram_id)
+    if not user_profile:
+        flash("Profile not found", "danger")
+        return redirect(url_for('main.index'))
 
+    form = ProfileForm(obj=user_profile)
+
+    if request.method == 'POST' and form.validate_on_submit():
+        # Prepare the form data for updating the database
+        filename = None
+        if form.photo.data:
+            os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+            filename = secure_filename(form.photo.data.filename)
+            form.photo.data.save(os.path.join(UPLOAD_FOLDER, filename))
+
+        form_data = {
+            'name': form.name.data,
+            'gender': form.gender.data,
+            'birthdate': form.birthdate.data,
+            'country': request.form.get('country'),
+            'city': request.form.get('city'),
+            'interests': form.interests.data,
+            'about': form.about.data
+        }
+
+        try:
+            # Update the user profile in the database
+            update_user_profile(telegram_id, form_data, filename)
+            flash("Profile updated successfully!", "success")
+            return redirect(url_for('main.index'))
+        except Exception as e:
+            flash(f"Error updating profile: {e}", "danger")
+            return redirect(url_for('main.edit_profile'))
+
+    return render_template('base.html', content_template='fragments/edit_profile.html', form=form)
 
 @main.route('/delete_profile', methods=['POST'])
 def delete_profile():
-    telegram_id = request.args.get('id')
-    conn = sqlite3.connect(DB_PATH)
-    cur = conn.cursor()
-    cur.execute('DELETE FROM users WHERE telegram_id=?', (telegram_id,))
-    conn.commit()
-    conn.close()
-    flash("Профиль удалён!")
-    return redirect(url_for('main.index'))
+    telegram_id = session.get('user_id')
+
+    # If user is not logged in, redirect to the home page
+    if not telegram_id:
+        flash("Please log in to delete your profile", "warning")
+        return redirect(url_for('main.index'))
+
+    try:
+        # Delete the user profile from the database
+        delete_user_profile(telegram_id)
+        flash("Profile deleted successfully!", "success")
+        # After deletion, log the user out (clear the session)
+        session.clear()
+        return redirect(url_for('main.index'))
+    except Exception as e:
+        flash(f"Error deleting profile: {e}", "danger")
+        return redirect(url_for('main.index'))
 
 
 @main.route('/search')
 def search_profiles():
+    # Get search parameters
+    country = request.args.get('country', '').strip()
     city = request.args.get('city', '').strip()
-    conn = sqlite3.connect(DB_PATH)
-    cur = conn.cursor()
-    if city:
-        cur.execute('SELECT * FROM users WHERE city LIKE ?', (f'%{city}%',))
+    gender = request.args.get('gender', '').strip()
+    min_age = request.args.get('min_age', type=int, default=18)
+    max_age = request.args.get('max_age', type=int, default=30)
+
+    # Use the search function with the provided filters
+    if country or city or gender or min_age or max_age:
+        rows = search_profiles_by_filters(country, city, gender, min_age, max_age)
     else:
-        cur.execute('SELECT * FROM users')
-    rows = cur.fetchall()
-    profiles = [dict(zip(['id', 'name', 'age', 'city', 'interests', 'about', 'photo', 'telegram_id'], row)) for row in rows]
-    conn.close()
+        rows = get_all_profiles()
+
+    profiles = [dict(zip(['id', 'name', 'age', 'city', 'country', 'gender', 'interests', 'about', 'photo', 'telegram_id'], row)) for row in rows]
+
     return render_template('base.html', content_template='fragments/search.html', profiles=profiles)
 
 
