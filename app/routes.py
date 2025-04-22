@@ -27,7 +27,8 @@ def index():
                 unread_count = get_unread_messages_count(user_id)
             else:
                 # If user doesn't exist, clear session and redirect
-                session.clear()  # Remove all session data
+                # session.clear()  # Remove all session data
+                session.pop("user_id", None)
                 flash("Your account no longer exists. Please log in again.", "warning")
                 return redirect(url_for("main.index"))
         except Exception as e:
@@ -51,6 +52,7 @@ def auth():
     telegram_id = data.get("telegram_id")
     if telegram_id:
         session["user_id"] = telegram_id
+        session.modified = True
         return jsonify({"status": "ok"})
     else:
         return jsonify({"status": "error", "message": "No Telegram ID"}), 400
