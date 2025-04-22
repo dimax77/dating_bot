@@ -112,8 +112,11 @@ def edit_profile():
     cur = conn.cursor()
 
     if request.method == 'POST':
+        
         name = request.form['name']
-        age = request.form['age']
+        gender = request.form['gender']
+        birthdate = request.form['birthdate']
+        country = request.form['country']
         city = request.form['city']
         interests = request.form['interests']
         about = request.form['about']
@@ -125,9 +128,9 @@ def edit_profile():
             photo.save(os.path.join(UPLOAD_FOLDER, filename))
 
         cur.execute('''
-            UPDATE profiles SET name=?, age=?, city=?, interests=?, about=?, photo=?
+            UPDATE users SET name=?, gender=?, birthdate=?, country=?, city=?, interests=?, about=?, photo=?
             WHERE telegram_id=?
-        ''', (name, age, city, interests, about, filename, telegram_id))
+        ''', (name, gender, birthdate, country, city, interests, about, filename, telegram_id))
         conn.commit()
         conn.close()
         return render_template('base.html', content_template='fragments/home.html', message="Профиль обновлён!")
