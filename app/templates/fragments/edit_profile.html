@@ -32,10 +32,10 @@
 
         <label for="photo">Фото</label>
         {{ profile.photo(class="form-control-file") }}
-        {% if profile._obj.photo %}
+        <!-- {% if profile._obj.photo %}
         <img src="{{ url_for('static', filename='uploads/' ~ profile._obj.photo) }}" alt="Current photo"
             class="preview-img">
-        {% endif %}
+        {% endif %} -->
 
         <button type="submit" class="submit-btn">Сохранить изменения</button>
     </form>
