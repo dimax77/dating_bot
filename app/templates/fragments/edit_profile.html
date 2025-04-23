@@ -2,7 +2,7 @@
  <!-- 
 'name', 'gender', 'birthdate', 'country', 'city', 'interests', 'about', 'photo', 'telegram_id'
  -->
-<div class="container">
+<!-- <div class="container">
     <h2>Редактировать анкету</h2>
     <form action="{{ url_for('main.edit_profile') }}" method="POST" enctype="multipart/form-data">
         <div>
@@ -53,4 +53,45 @@
         </div>
     </form>
 
+</div> -->
+
+<div class="container">
+    <h2>Редактировать анкету</h2>
+    <form method="POST" enctype="multipart/form-data">
+        {{ profile.hidden_tag() }}
+
+        <label for="name">Имя</label>
+        {{ profile.name(class="form-control") }}
+
+        <label for="gender">Пол</label>
+        {{ profile.gender(class="form-control") }}
+
+        <label for="birthdate">Дата рождения</label>
+        {{ profile.birthdate(class="form-control") }}
+
+        <div>
+            <label for="country">Страна</label>
+            <input type="text" id="country" name="country" value="{{ profile.get('country', '') }}" required>
+        </div>
+        
+        <div>
+            <label for="city">Город</label>
+            <input type="text" id="city" name="city" value="{{ profile.get('city', '') }}" required>
+        </div>
+
+        <label for="interests">Интересы</label>
+        {{ profile.interests(class="form-control", rows="3") }}
+
+        <label for="about">О себе</label>
+        {{ profile.about(class="form-control", rows="3") }}
+
+        <label for="photo">Фото</label>
+        {{ profile.photo(class="form-control-file") }}
+        {% if profile._obj.photo %}
+        <img src="{{ url_for('static', filename='uploads/' ~ profile._obj.photo) }}" alt="Current photo"
+            class="preview-img">
+        {% endif %}
+
+        <button type="submit" class="submit-btn">Сохранить изменения</button>
+    </form>
 </div>

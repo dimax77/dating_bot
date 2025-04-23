@@ -97,24 +97,26 @@ def create_profile():
 
     return render_template('base.html', content_template='fragments/create_profile.html', form=form)
 
+from datetime import datetime
 
 @main.route('/edit_profile', methods=['GET', 'POST'])
 def edit_profile():
     telegram_id = session.get('user_id')
     if not telegram_id:
-        flash("Please log in to edit your profile", "warning")
+        flash("Пожалуйста, войдите в систему", "warning")
         return redirect(url_for('main.index'))
 
     user_profile = get_user_by_telegram_id(telegram_id)
     if not user_profile:
-        flash("Profile not found", "danger")
+        flash("Профиль не найден", "danger")
         return redirect(url_for('main.index'))
 
     profile_data = dict(user_profile)
+    # profile_data['birthdate'] = datetime.strptime(profile_data['birthdate'], '%Y-%m-%d').date() if profile_data['birthdate'] else None
     form = ProfileForm(data=profile_data)
 
-    if form.validate_on_submit():
-        filename = None
+    if request.method == 'POST' and form.validate():
+        filename = user_profile['photo']
         if form.photo.data:
             os.makedirs(UPLOAD_FOLDER, exist_ok=True)
             filename = secure_filename(form.photo.data.filename)
@@ -127,21 +129,18 @@ def edit_profile():
             'country': form.country.data,
             'city': form.city.data,
             'interests': form.interests.data,
-            'about': form.about.data
+            'about': form.about.data,
         }
-
-        if not filename:
-            filename = user_profile['photo']
 
         try:
             update_user_profile(telegram_id, form_data, filename)
-            flash("Profile updated successfully!", "success")
+            flash("Профиль успешно обновлён!", "success")
             return redirect(url_for('main.index'))
         except Exception as e:
-            flash(f"Error updating profile: {e}", "danger")
+            flash(f"Ошибка при обновлении: {e}", "danger")
             return redirect(url_for('main.edit_profile'))
 
-    return render_template('base.html', content_template='fragments/edit_profile.html', profile=profile_data)
+    return render_template('base.html', content_template='fragments/edit_profile.html', profile=form)
 
 @main.route('/delete_profile', methods=['POST'])
 def delete_profile():
