@@ -1,8 +1,8 @@
-<!-- app/templates/fragments/edit_profile.html -->
+app/templates/fragments/edit_profile.html
  <!-- 
 'name', 'gender', 'birthdate', 'country', 'city', 'interests', 'about', 'photo', 'telegram_id'
  -->
-<!-- <div class="container">
+<div class="container">
     <h2>Редактировать анкету</h2>
     <form action="{{ url_for('main.edit_profile') }}" method="POST" enctype="multipart/form-data">
         <div>
@@ -53,7 +53,7 @@
         </div>
     </form>
 
-</div> -->
+</div>
 
 <div class="container">
     <h2>Редактировать анкету</h2>
@@ -69,15 +69,16 @@
         <label for="birthdate">Дата рождения</label>
         {{ profile.birthdate(class="form-control") }}
 
-        <div>
-            <label for="country">Страна</label>
-            <input type="text" id="country" name="country" value="{{ profile.get('country', '') }}" required>
-        </div>
+        <label for="country">Country</label>
+        <select id="country" name="country" required>
+            <option value="{{ profile.country.data }}" selected>{{ profile.country.data }}</option>
+        </select>
         
-        <div>
-            <label for="city">Город</label>
-            <input type="text" id="city" name="city" value="{{ profile.get('city', '') }}" required>
-        </div>
+        <label for="city">City</label>
+        <select id="city" name="city" required>
+            <option value="{{ profile.city.data }}" selected>{{ profile.city.data }}</option>
+        </select>
+
 
         <label for="interests">Интересы</label>
         {{ profile.interests(class="form-control", rows="3") }}
