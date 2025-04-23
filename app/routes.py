@@ -120,7 +120,8 @@ def edit_profile():
         flash("Profile not found", "danger")
         return redirect(url_for('main.index'))
 
-    form = ProfileForm(obj=user_profile)
+    profile_data = dict(user_profile)
+    form = ProfileForm(obj=profile_data)
 
     if request.method == 'POST' and form.validate_on_submit():
         # Prepare the form data for updating the database
