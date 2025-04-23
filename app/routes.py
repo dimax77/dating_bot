@@ -65,39 +65,31 @@ def auth():
 def create_profile():
     telegram_id = session.get('user_id')
     if not telegram_id:
-        current_app.logger.warning("No telegram_id in session!")
-    else:
-        current_app.logger.info(f"Using telegram_id from session: {telegram_id}")
+        flash("Please log in to create a profile", "warning")
+        return redirect(url_for('main.index'))
 
     form = ProfileForm()
 
-    if request.method == 'POST' and form.validate_on_submit():
-        telegram_id = session.get('user_id')
+    if form.validate_on_submit():
         filename = None
-
-        # Save uploaded photo if it exists
         if form.photo.data:
             os.makedirs(UPLOAD_FOLDER, exist_ok=True)
             filename = secure_filename(form.photo.data.filename)
             form.photo.data.save(os.path.join(UPLOAD_FOLDER, filename))
 
-        # Prepare form data for insertion into the database
         form_data = {
             'name': form.name.data,
             'gender': form.gender.data,
             'birthdate': form.birthdate.data,
-            # 'country': request.form.get("country"),
-            # 'city': request.form.get("city"),
             'country': form.country.data,
             'city': form.city.data,
             'interests': form.interests.data,
             'about': form.about.data
         }
 
-        # Insert user profile into the database
         try:
-            create_user_profile(form_data, telegram_id, filename)
-            flash("Profile created successfully!")
+            create_user_profile(telegram_id, form_data, filename)
+            flash("Profile created successfully!", "success")
             return redirect(url_for('main.index'))
         except Exception as e:
             flash(f"Error creating profile: {e}", "danger")
@@ -105,26 +97,23 @@ def create_profile():
 
     return render_template('base.html', content_template='fragments/create_profile.html', form=form)
 
+
 @main.route('/edit_profile', methods=['GET', 'POST'])
 def edit_profile():
     telegram_id = session.get('user_id')
-
-    # If user is not logged in, redirect to the home page
     if not telegram_id:
         flash("Please log in to edit your profile", "warning")
         return redirect(url_for('main.index'))
 
-    # Fetch the user's profile from the database
     user_profile = get_user_by_telegram_id(telegram_id)
     if not user_profile:
         flash("Profile not found", "danger")
         return redirect(url_for('main.index'))
 
     profile_data = dict(user_profile)
-    form = ProfileForm(obj=profile_data)
+    form = ProfileForm(data=profile_data)
 
-    if request.method == 'POST' and form.validate_on_submit():
-        # Prepare the form data for updating the database
+    if form.validate_on_submit():
         filename = None
         if form.photo.data:
             os.makedirs(UPLOAD_FOLDER, exist_ok=True)
@@ -135,14 +124,16 @@ def edit_profile():
             'name': form.name.data,
             'gender': form.gender.data,
             'birthdate': form.birthdate.data,
-            'country': request.form.get('country'),
-            'city': request.form.get('city'),
+            'country': form.country.data,
+            'city': form.city.data,
             'interests': form.interests.data,
             'about': form.about.data
         }
 
+        if not filename:
+            filename = user_profile['photo']
+
         try:
-            # Update the user profile in the database
             update_user_profile(telegram_id, form_data, filename)
             flash("Profile updated successfully!", "success")
             return redirect(url_for('main.index'))
@@ -150,7 +141,7 @@ def edit_profile():
             flash(f"Error updating profile: {e}", "danger")
             return redirect(url_for('main.edit_profile'))
 
-    return render_template('base.html', content_template='fragments/edit_profile.html', form=form, profile=user_profile)
+    return render_template('base.html', content_template='fragments/edit_profile.html', form=form)
 
 @main.route('/delete_profile', methods=['POST'])
 def delete_profile():
