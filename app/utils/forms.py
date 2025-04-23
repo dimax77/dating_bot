@@ -7,6 +7,8 @@ class ProfileForm(FlaskForm):
     name = StringField('Name', validators=[DataRequired()])
     gender = SelectField('Gender', choices=[('male', 'Male'), ('female', 'Female'), ('other', 'Other')])
     birthdate = DateField('Birthdate', format='%Y-%m-%d', validators=[DataRequired()])
+    country = StringField('Country')
+    city = StringField('City')   
     # country = SelectField('Country', choices=[], validators=[DataRequired()])
     # city = SelectField('City', choices=[], validators=[DataRequired()])
     interests = TextAreaField('Interests')

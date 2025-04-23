@@ -86,8 +86,10 @@ def create_profile():
             'name': form.name.data,
             'gender': form.gender.data,
             'birthdate': form.birthdate.data,
-            'country': request.form.get("country"),
-            'city': request.form.get("city"),
+            # 'country': request.form.get("country"),
+            # 'city': request.form.get("city"),
+            'country': form.country.data,
+            'city': form.city.data,
             'interests': form.interests.data,
             'about': form.about.data
         }
@@ -147,7 +149,7 @@ def edit_profile():
             flash(f"Error updating profile: {e}", "danger")
             return redirect(url_for('main.edit_profile'))
 
-    return render_template('base.html', content_template='fragments/edit_profile.html', form=form)
+    return render_template('base.html', content_template='fragments/edit_profile.html', form=form, profile=user_profile)
 
 @main.route('/delete_profile', methods=['POST'])
 def delete_profile():
