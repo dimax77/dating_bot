@@ -113,7 +113,7 @@ def edit_profile():
         return redirect(url_for('main.index'))
 
     profile_data = dict(user_profile)
-    # profile_data['birthdate'] = datetime.strptime(profile_data['birthdate'], '%Y-%m-%d').date() if profile_data['birthdate'] else None
+    profile_data['birthdate'] = datetime.strptime(profile_data['birthdate'], '%Y-%m-%d').date() if profile_data['birthdate'] else None
     form = ProfileForm(data=profile_data)
 
     if request.method == 'POST' and form.validate():
