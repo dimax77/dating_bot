@@ -31,22 +31,49 @@
         <label for="min_age">Возраст от:
             <select name="min_age">
                 <option value="18" selected>18</option>
+                <option value="20">19</option>
                 <option value="20">20</option>
-                <option value="25">25</option>
-                <option value="30">30</option>
+                <option value="20">21</option>
+                <option value="20">22</option>
+                <option value="20">23</option>
+                <option value="20">24</option>
+                <option value="20">25</option>
+                <option value="20">26</option>
+                <option value="20">27</option>
+                <option value="20">28</option>
+                <option value="20">29</option>
+                <option value="25">30</option>
+                <option value="30">31</option>
+                <option value="35">32</option>
+                <option value="35">33</option>
+                <option value="35">34</option>
                 <option value="35">35</option>
-                <option value="40">40</option>
+                <option value="35">36</option>
+                <option value="35">37</option>
+                <option value="35">38</option>
+                <option value="35">39</option>
+                <option value="35">40</option>
+                <option value="40">41</option>
             </select>
         </label>
 
         <label for="max_age">Возраст до:
             <select name="max_age">
                 <option value="30" selected>30</option>
+                <option value="35">31</option>
+                <option value="35">32</option>
+                <option value="35">33</option>
+                <option value="35">34</option>
                 <option value="35">35</option>
-                <option value="40">40</option>
-                <option value="45">45</option>
-                <option value="50">50</option>
-                <option value="60">60</option>
+                <option value="35">36</option>
+                <option value="35">37</option>
+                <option value="35">38</option>
+                <option value="35">39</option>
+                <option value="35">40</option>
+                <option value="40">41</option>
+                <option value="45">42</option>
+                <option value="50">43</option>
+                <option value="60">44</option>
             </select>
         </label>
 
@@ -66,6 +93,19 @@
         </div>
         {% endfor %}
     </div>
+    <div class="profile-cards">
+        {% for profile in profiles %}
+        <div class="profile-card">
+            <img src="{{ profile.photo_url }}" alt="Фото {{ profile.name }}">
+            <div class="profile-info">
+                <h3>{{ profile.name }}, {{ profile.age }}</h3>
+                <p>{{ profile.city }}, {{ profile.country }}</p>
+                <p class="profile-about">{{ profile.about|truncate(100) }}</p>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
 </div>
 
 <script src="{{ url_for('static', filename='js/geo-loader.js') }}" defer></script>
