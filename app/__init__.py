@@ -33,7 +33,7 @@ def create_app():
     app.logger.addHandler(file_handler)
 
     app.logger.info("App startup")
-    app.logger.debug("Secret Key: %s", app.secret_key)
+    app.logger.info("Secret Key: %s", app.secret_key)
 
     # Только если нужно логировать в консоль (например, в dev):
     if app.config.get("ENV") == "development":
