@@ -1,14 +1,16 @@
 # app/routes.py
 
-from flask import Blueprint, render_template, request, session, jsonify, redirect, url_for, flash, current_app
+from flask import Blueprint, render_template, request, session, jsonify, redirect, url_for, flash, current_app, abort
 from app.utils.forms import ProfileForm
 import os
+import urllib
 import sqlite3
 from app.db.db import get_user_by_telegram_id, get_unread_messages_count, create_user_profile, update_user_profile, delete_user_profile
 from app.db.db import search_profiles_by_filters, get_all_profiles
 from werkzeug.utils import secure_filename
 
 DB_PATH = 'data/dating_bot.db'
+BOT_TOKEN = os.environ.get('BOT_TOKEN')
 
 main = Blueprint('main', __name__)
 UPLOAD_FOLDER = 'static/uploads'
@@ -53,7 +55,11 @@ def index():
 @main.route("/auth", methods=["POST"])
 def auth():
     data = request.get_json()
-    telegram_id = data.get("telegram_id")
+    init_data = data.get('initData')
+    if not valid_init_data(init_data):
+        abort(403, "Invalid init data!")
+
+    telegram_id = eval(urllib.parse.parse_qs(init_data)["user"][0])["id"]
     if telegram_id:
         session["user_id"] = telegram_id
         session.modified = True
@@ -233,3 +239,18 @@ def dialog(user_id):
     conn.close()
 
     return render_template('base.html', content_template='fragments/dialog.html', messages=messages, user_id=user_id)
+
+import hmac
+import hashlib
+
+def valid_init_data(init_data_str):
+    parsed_data = urllib.parse.parse_qs(init_data_str, keep_blank_values=True)
+    data_check_str = '\n'.join(
+        f"{k}={v[0]}" for k, v in sorted(parsed_data.items()) if k!= 'hash'
+    )
+
+    secret_key = hashlib.sha256(BOT_TOKEN.encode()).digest()
+    computed_hash = hmac.new(secret_key, data_check_str.encode(), hashlib.sha256).hexdigest()
+
+    provided_hash = parsed_data['hash'][0]
+    return hmac.compare_digest(computed_hash, provided_hash)

@@ -8,13 +8,16 @@ let currentPath = location.pathname + location.search;
 Telegram.WebApp.ready();
 Telegram.WebApp.expand();
 
-const tgUser = Telegram.WebApp.initDataUnsafe.user;
+// const tgUser = Telegram.WebApp.initDataUnsafe.user;
+const initData = Telegram.WebApp.initData;
 
 if (tgUser && tgUser.id && !sessionStorage.getItem("auth_done")) {
     fetch("/auth", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ telegram_id: tgUser.id })
+        body: JSON.stringify({ 
+            // telegram_id: tgUser.id, 
+            initData: initData })
     }).then(() => {
         // Перезагрузим, чтобы отобразилось правильное содержимое
         sessionStorage.setItem("auth_done", "1");
