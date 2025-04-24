@@ -8,21 +8,22 @@ let currentPath = location.pathname + location.search;
 Telegram.WebApp.ready();
 Telegram.WebApp.expand();
 
-// const tgUser = Telegram.WebApp.initDataUnsafe.user;
 const initData = Telegram.WebApp.initData;
 
-if (tgUser && tgUser.id && !sessionStorage.getItem("auth_done")) {
+if (initData && !sessionStorage.getItem("auth_done")) {
     fetch("/auth", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ 
-            // telegram_id: tgUser.id, 
-            initData: initData })
-    }).then(() => {
-        // Перезагрузим, чтобы отобразилось правильное содержимое
+        body: JSON.stringify({
+            initData: initData
+        })
+    }).then(res => {
+        if (!res.ok) throw new Error("Auth failed");
         sessionStorage.setItem("auth_done", "1");
-
         location.reload();
+    }).catch((err) => {
+        console.error("Ошибка авторизации:", err);
+        Telegram.WebApp.showAlert("Не удалось авторизоваться. Попробуйте позже.");
     });
 }
 
@@ -77,10 +78,13 @@ async function loadPage(url) {
 // Навигация по ссылке
 async function navigateTo(url) {
     if (url !== currentPath) {
+
+        await loadPage(url);
+
         navStack.push(currentPath);
         currentPath = url;
         history.pushState(null, null, url);
-        await loadPage(url);
+
         if (window.location.pathname.startsWith("/create_profile")) {
             console.log("GOT YA! Window.LocationPathname: ", window.location.pathname)
 

@@ -15,6 +15,8 @@ BOT_TOKEN = os.environ.get('BOT_TOKEN')
 main = Blueprint('main', __name__)
 UPLOAD_FOLDER = 'static/uploads'
 
+import json
+
 @main.route('/')
 def index():
     user = None
@@ -59,7 +61,9 @@ def auth():
     if not valid_init_data(init_data):
         abort(403, "Invalid init data!")
 
-    telegram_id = eval(urllib.parse.parse_qs(init_data)["user"][0])["id"]
+    user_data = json.loads(urllib.parse.parse_qs(init_data)["user"][0])
+    telegram_id = user_data.get("id")
+
     if telegram_id:
         session["user_id"] = telegram_id
         session.modified = True
