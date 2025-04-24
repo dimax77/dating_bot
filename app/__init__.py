@@ -17,7 +17,7 @@ def create_app():
     app = Flask(__name__, static_folder=static_dir, template_folder=templates_dir)
     # app.secret_key = 'supersecretkey'
     app.secret_key = os.environ.get("SECRET_KEY", "fallback_secret_key")
-
+    print(app.secret_key)
 
 
     if not os.path.exists("logs"):

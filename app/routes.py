@@ -72,6 +72,8 @@ def create_profile():
 
     if form.validate_on_submit():
         filename = None
+        print(form.errors)
+
         if form.photo.data:
             os.makedirs(UPLOAD_FOLDER, exist_ok=True)
             filename = secure_filename(form.photo.data.filename)
