@@ -16,10 +16,14 @@
 
 
     <label for="country">Country</label>
-    <select id="country" name="country" required marked></select>
+    <select id="country" required marked></select>
 
     <label for="city">City</label>
-    <select id="city" name="city" required disabled></select>
+    <select id="city" required disabled></select>
+    
+    <input type="hidden" name="country" id="hidden-country">
+    <input type="hidden" name="city" id="hidden-city">
+
 
     <div class="form-group">
         <label>{{ form.interests.label }} {{ form.interests() }}</label>
