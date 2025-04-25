@@ -72,11 +72,9 @@ def auth():
     init_data = data.get('initData')
     current_app.logger.info("InitData Received: {init_data}")
 
-    if not valid_init_data(init_data):
-        abort(403, "Invalid init data!")
+    # if not valid_init_data(init_data):
+    #     abort(403, "Invalid init data!")
 
-    # user_data = json.loads(urllib.parse.parse_qs(init_data)["user"][0])
-    # telegram_id = user_data.get("id")
     parsed_data = urllib.parse.parse_qs(init_data)
     user_data_json = parsed_data.get("user", [None])[0]
 
