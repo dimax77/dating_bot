@@ -72,8 +72,9 @@ def auth():
     init_data = data.get('initData')
     current_app.logger.info("InitData Received: {init_data}")
 
-    # if not valid_init_data(init_data):
-    #     abort(403, "Invalid init data!")
+    if not validate_telegram_data(init_data):
+        abort(403, "Invalid init data!")
+    
 
     parsed_data = urllib.parse.parse_qs(init_data)
     user_data_json = parsed_data.get("user", [None])[0]
@@ -283,3 +284,26 @@ def valid_init_data(init_data_str: str) -> bool:
     computed_hash = hmac.new(secret_key, data_check_str.encode(), hashlib.sha256).hexdigest()
 
     return hmac.compare_digest(computed_hash, hash_received)
+
+def validate_telegram_data(init_data):
+    # Декодируем initData из URL-кодировки
+    data = dict(urllib.parse.parse_qsl(init_data))
+    hash_value = data.pop('hash', None)  # Извлекаем hash из данных
+
+    # Если hash отсутствует, валидация невозможна
+    if not hash_value:
+        return False
+
+    # Сортируем данные по ключам и формируем строку
+    sorted_data = "\n".join(f"{k}={v}" for k, v in sorted(data.items()))
+
+    # Генерируем секретный ключ из BOT_TOKEN
+    secret_key = hmac.new(
+        b"WebAppData", BOT_TOKEN.encode(), hashlib.sha256).digest()
+
+    # Вычисляем хеш
+    calculated_hash = hmac.new(
+        secret_key, sorted_data.encode(), hashlib.sha256).hexdigest()
+
+    # Сравниваем вычисленный хеш с переданным
+    return hmac.compare_digest(hash_value, calculated_hash)
