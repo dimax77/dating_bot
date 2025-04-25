@@ -23,6 +23,12 @@ if (initData && !sessionStorage.getItem("auth_done")) {
         location.reload();
     }).catch((err) => {
         console.error("Ошибка авторизации:", err);
+        // 🔥 Send error to server
+        fetch("/error_log", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ message: `Auth error: ${err.message}` })
+        });
         Telegram.WebApp.showAlert("Не удалось авторизоваться. Попробуйте позже.");
     });
 }

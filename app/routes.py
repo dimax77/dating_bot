@@ -2,6 +2,8 @@
 
 from flask import Blueprint, render_template, request, session, jsonify, redirect, url_for, flash, current_app, abort
 from app.utils.forms import ProfileForm
+from urllib.parse import urlencode
+
 import os
 import urllib
 import sqlite3
@@ -53,6 +55,14 @@ def index():
     return render_template('base.html',
                            content_template="fragments/intro.html",
                            body_class="welcome")
+
+@main.route("/error_log", methods=["POST"])
+def error_log():
+    data = request.get_json()
+    error_message = data.get("message", "No message")
+    current_app.logger.info(f"Client side: {error_message}")
+    return jsonify({"status": "logged"})
+
 
 @main.route("/auth", methods=["POST"])
 def auth():
@@ -247,15 +257,20 @@ def dialog(user_id):
 
 import hmac
 import hashlib
+import urllib.parse
 
-def valid_init_data(init_data_str):
-    parsed_data = urllib.parse.parse_qs(init_data_str, keep_blank_values=True)
+
+def valid_init_data(init_data_str: str) -> bool:
+    parsed_data = dict(urllib.parse.parse_qsl(init_data_str, keep_blank_values=True))
+    hash_received = parsed_data.pop("hash", None)
+    if not hash_received:
+        return False
+    
     data_check_str = '\n'.join(
-        f"{k}={v[0]}" for k, v in sorted(parsed_data.items()) if k!= 'hash'
+        f"{k}={v}" for k, v in sorted(parsed_data.items())
     )
 
     secret_key = hashlib.sha256(BOT_TOKEN.encode()).digest()
     computed_hash = hmac.new(secret_key, data_check_str.encode(), hashlib.sha256).hexdigest()
 
-    provided_hash = parsed_data['hash'][0]
-    return hmac.compare_digest(computed_hash, provided_hash)
+    return hmac.compare_digest(computed_hash, hash_received)
