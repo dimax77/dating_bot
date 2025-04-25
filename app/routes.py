@@ -58,6 +58,7 @@ def index():
 def auth():
     data = request.get_json()
     init_data = data.get('initData')
+    current_app.logger.info(init_data)
     if not valid_init_data(init_data):
         abort(403, "Invalid init data!")
 
