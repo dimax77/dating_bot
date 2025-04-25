@@ -14,6 +14,8 @@ from werkzeug.utils import secure_filename
 DB_PATH = 'data/dating_bot.db'
 BOT_TOKEN = os.environ.get('BOT_TOKEN')
 
+current_app.logger.info("Bot token: %s", BOT_TOKEN)
+
 main = Blueprint('main', __name__)
 UPLOAD_FOLDER = 'static/uploads'
 
@@ -68,11 +70,20 @@ def error_log():
 def auth():
     data = request.get_json()
     init_data = data.get('initData')
-    current_app.logger.info(init_data)
+    current_app.logger.info("InitData Received: {init_data}")
+
     if not valid_init_data(init_data):
         abort(403, "Invalid init data!")
 
-    user_data = json.loads(urllib.parse.parse_qs(init_data)["user"][0])
+    # user_data = json.loads(urllib.parse.parse_qs(init_data)["user"][0])
+    # telegram_id = user_data.get("id")
+    parsed_data = urllib.parse.parse_qs(init_data)
+    user_data_json = parsed_data.get("user", [None])[0]
+
+    if not user_data_json:
+        return jsonify({"status": "error", "message": "User data missing"}), 400
+
+    user_data = json.loads(user_data_json)
     telegram_id = user_data.get("id")
 
     if telegram_id:

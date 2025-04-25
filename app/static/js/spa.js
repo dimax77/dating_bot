@@ -17,8 +17,12 @@ if (initData && !sessionStorage.getItem("auth_done")) {
         body: JSON.stringify({
             initData: initData
         })
-    }).then(res => {
-        if (!res.ok) throw new Error("Auth failed");
+    }).then(async res => {
+        if (!res.ok) {
+            const data = await res.json().catch(() => ({}));
+            const msg = data.message || "Unknown error";
+            throw new Error(`Auth failed: ${msg}`);
+        }
         sessionStorage.setItem("auth_done", "1");
         location.reload();
     }).catch((err) => {
