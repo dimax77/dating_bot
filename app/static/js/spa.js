@@ -112,7 +112,7 @@ async function navigateTo(url) {
                     } else {
                         console.warn("Элемент country не найден при initGeoLoader");
                     }
-                }, 0);
+                }, 10);
             }).catch(err => {
                 console.error("Failed to load geo-loader:", err);
             });
