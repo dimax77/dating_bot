@@ -180,14 +180,18 @@ document.addEventListener("DOMContentLoaded", () => {
         const form = e.target;
         if (form.id === "profileForm") {
             e.preventDefault();
-            selectedCountry = document.getElementById('country').value
-            selectedCity = document.getElementById('city').value
-            console.log("Selected country: ", selectedCountry)
-            console.log("Selected city: ", selectedCity)
-            document.getElementById('hidden-country').value = selectedCountry;
-            document.getElementById('hidden-city').value = selectedCity;
+            // selectedCountry = document.getElementById('country').value
+            // selectedCity = document.getElementById('city').value
+            // console.log("Selected country: ", selectedCountry)
+            // console.log("Selected city: ", selectedCity)
+            // document.getElementById('hidden-country').value = selectedCountry;
+            // document.getElementById('hidden-city').value = selectedCity;
 
             const formData = new FormData(form);
+
+            server_log("Submit proccessing..")
+            server_log(`Form data: ${formData.JSON}`)
+
             try {
                 const response = await fetch("/create_profile", {
                     method: "POST",
