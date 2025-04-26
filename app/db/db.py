@@ -42,20 +42,45 @@ def create_user_profile(form_data, telegram_id, filename=None):
     INSERT INTO users (name, gender, birthdate, country, city, interests, about, photo, telegram_id)
     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
     '''
-    with get_db_connection() as conn:
-        cur = conn.cursor()
-        cur.execute(query, (
-            form_data['name'],
-            form_data['gender'],
-            form_data['birthdate'].strftime('%Y-%m-%d'),
-            form_data['country'],
-            form_data['city'],
-            form_data['interests'],
-            form_data['about'],
-            filename,
-            telegram_id
-        ))
-        conn.commit()
+    # with get_db_connection() as conn:
+    #     cur = conn.cursor()
+    #     cur.execute(query, (
+    #         form_data['name'],
+    #         form_data['gender'],
+    #         form_data['birthdate'].strftime('%Y-%m-%d'),
+    #         form_data['country'],
+    #         form_data['city'],
+    #         form_data['interests'],
+    #         form_data['about'],
+    #         filename,
+    #         telegram_id
+    #     ))
+    #     conn.commit()
+    try:
+        with get_db_connection() as conn:
+            cur = conn.cursor()
+            cur.execute(query, (
+                form_data['name'],
+                form_data['gender'],
+                form_data['birthdate'].strftime('%Y-%m-%d'),
+                form_data['country'],
+                form_data['city'],
+                form_data['interests'],
+                form_data['about'],
+                filename,
+                telegram_id
+            ))
+            conn.commit()
+            return {"success": True, "message": "User profile created successfully."}
+    except sqlite3.IntegrityError as e:
+        # Например, если у тебя ограничение UNIQUE на telegram_id
+        return {"success": False, "error": f"Integrity error: {e}"}
+    except sqlite3.OperationalError as e:
+        # Ошибки типа "нет такой таблицы" или неправильный SQL синтаксис
+        return {"success": False, "error": f"Operational error: {e}"}
+    except Exception as e:
+        # Ловим все остальные ошибки
+        return {"success": False, "error": f"Unexpected error: {e}"}
     
 def update_user_profile(telegram_id, form_data, filename=None):
     """Update the user profile in the database."""
