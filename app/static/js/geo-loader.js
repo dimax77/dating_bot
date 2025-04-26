@@ -19,9 +19,9 @@ export function initGeoLoader() {
     const photoInput = document.getElementById('photo');
     const preview = document.getElementById('photo-preview');
 
-    console.log("initGeoLoader: countrySelect:", document.getElementById('country'));
-    console.log("countrySelect value:", countrySelect);
-    console.log("countrySelect.TEXT_NODE value:", countrySelect.TEXT_NODE);
+    server_log(`initGeoLoader: countrySelect: ${document.getElementById('country') }`);
+    server_log(`countrySelect value: ${countrySelect}`);
+    server_log(`countrySelect.TEXT_NODE value: ${countrySelect.TEXT_NODE}`);
 
 
 

@@ -86,9 +86,6 @@ def auth():
     telegram_id = user_data.get("id")
 
 
-    #  for desktop debug
-    telegram_id = '5070300052'
-
     if telegram_id:
         session["user_id"] = telegram_id
         session.modified = True
