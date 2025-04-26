@@ -7,10 +7,12 @@ class ProfileForm(FlaskForm):
     name = StringField('Name', validators=[DataRequired()])
     gender = SelectField('Gender', choices=[('male', 'Male'), ('female', 'Female'), ('other', 'Other')])
     birthdate = DateField('Birthdate', format='%Y-%m-%d', validators=[DataRequired()])
-    # country = StringField('Country')
-    # city = StringField('City')
-    country = HiddenField('Country', validators=[DataRequired()])
-    city = HiddenField('City', validators=[DataRequired()])
+    
+    country = StringField('Country', validators=[DataRequired()])
+    city = StringField('City', validators=[DataRequired()])
+
+    # country = HiddenField('Country', validators=[DataRequired()])
+    # city = HiddenField('City', validators=[DataRequired()])
     interests = TextAreaField('Interests')
     about = TextAreaField('About')
     photo = FileField('Upload your photo')
