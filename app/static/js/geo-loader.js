@@ -2,6 +2,15 @@
 
 console.log("GEO JS LOADED");
 
+// Server Log 
+function server_log(message) {
+    fetch("/error_log", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message: `${message}` })
+    });
+}
+
 // document.addEventListener('DOMContentLoaded', () => {
 export function initGeoLoader() {
     console.log("initGeoLoader: countrySelect:", document.getElementById('country'));
@@ -18,6 +27,7 @@ export function initGeoLoader() {
             console.log('Countries received:', countries);
             countrySelect.innerHTML = '<option value="">Select a country</option>';
             console.log('countrySelect is:', countrySelect);
+            server_log(`countrySelect is:\n${countrySelect}`)
 
             countries.forEach(country => {
                 const option = document.createElement('option');

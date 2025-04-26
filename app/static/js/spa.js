@@ -28,12 +28,17 @@ if (initData && !sessionStorage.getItem("auth_done")) {
     }).catch((err) => {
         console.error("Ошибка авторизации:", err);
         // 🔥 Send error to server
-        fetch("/error_log", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ message: `Auth error: ${err.message}` })
-        });
+        server_log(`Auth error: ${err.message}`)
         Telegram.WebApp.showAlert("Не удалось авторизоваться. Попробуйте позже.");
+    });
+}
+
+// Server Log 
+function server_log(message) {
+    fetch("/error_log", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message: `${message}` })
     });
 }
 
@@ -79,6 +84,7 @@ async function loadPage(url) {
         window.scrollTo(0, 0);
     } catch (err) {
         console.error("Ошибка загрузки страницы:", err);
+        server_log(`Ошибка загрузки страницы: ${err}`)
         document.getElementById("content").innerHTML = "<p>Ошибка загрузки страницы.</p>";
     } finally {
         hideLoader();
