@@ -177,43 +177,43 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
   
-    // Обработка отправки формы профиля
-    document.addEventListener("submit", async (e) => {
-        const form = e.target;
-        if (form.id === "profileForm") {
-            e.preventDefault();
+    // // Обработка отправки формы профиля
+    // document.addEventListener("submit", async (e) => {
+    //     const form = e.target;
+    //     if (form.id === "profileForm") {
+    //         e.preventDefault();
 
-            const formData = new FormData(form);
+    //         const formData = new FormData(form);
 
-            server_log("Submit proccessing..")
-            server_log("Form data:");
-            formData.forEach((value, key) => {
-                server_log(`${key}: ${value}`);
-            });
+    //         server_log("Submit proccessing..")
+    //         server_log("Form data:");
+    //         formData.forEach((value, key) => {
+    //             server_log(`${key}: ${value}`);
+    //         });
 
-            try {
-                const response = await fetch("/create_profile", {
-                    method: "POST",
-                    body: formData,
-                });
+    //         try {
+    //             const response = await fetch("/create_profile", {
+    //                 method: "POST",
+    //                 body: formData,
+    //             });
 
-                const html = await response.text();
+    //             const html = await response.text();
 
-                const parser = new DOMParser();
-                const doc = parser.parseFromString(html, "text/html");
-                const newContent = doc.querySelector("main");
+    //             const parser = new DOMParser();
+    //             const doc = parser.parseFromString(html, "text/html");
+    //             const newContent = doc.querySelector("main");
 
-                main.innerHTML = newContent.innerHTML;
+    //             main.innerHTML = newContent.innerHTML;
 
-                const url = "/";
-                history.pushState(null, null, url);
-                currentPath = url;
-                window.scrollTo(0, 0);
-            } catch (err) {
-                console.error("Ошибка при создании анкеты:", err);
-            }
-        }
-    });
+    //             const url = "/";
+    //             history.pushState(null, null, url);
+    //             currentPath = url;
+    //             window.scrollTo(0, 0);
+    //         } catch (err) {
+    //             console.error("Ошибка при создании анкеты:", err);
+    //         }
+    //     }
+    // });
 
     // Инициализация
     loadPage(currentPath);
