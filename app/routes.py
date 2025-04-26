@@ -126,7 +126,7 @@ def create_profile():
             create_user_profile(telegram_id, form_data, filename)
             flash("Profile created successfully!", "success")
             # return redirect(url_for('main.index'))
-            return json({'ok': "ok"})
+            return jsonify({'ok': "ok"})
         except Exception as e:
             flash(f"Error creating profile: {e}", "danger")
             return redirect(url_for('main.create_profile'))
