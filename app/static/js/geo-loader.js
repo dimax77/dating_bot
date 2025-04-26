@@ -25,6 +25,9 @@ export function initGeoLoader() {
         .then(res => res.json())
         .then(countries => {
             console.log('Countries received:', countries);
+            server_log(`countrySelect before updates is:\n${countrySelect}`)
+            server_log(`Countries received::\n${countries}`)
+
             countrySelect.innerHTML = '<option value="">Select a country</option>';
             console.log('countrySelect is:', countrySelect);
             server_log(`countrySelect is:\n${countrySelect}`)
