@@ -1,46 +1,53 @@
 <!-- app/templates/fragments/create_profile.html -->
-<form id="profileForm" method="POST" enctype="multipart/form-data">
-    {{ form.hidden_tag() }}
-
-    <div class="form-group">
-        <label>{{ form.name.label }} {{ form.name() }}</label>
-    </div>
-
-    <div class="form-group">
-        <label>{{ form.gender.label }} {{ form.gender() }}</label>
-    </div>
-
-    <div class="form-group">
-        <label>{{ form.birthdate.label }} {{ form.birthdate() }}</label>
-    </div>
-
-
-    <label for="country">Country</label>
-    <select id="country" required marked></select>
-
-    <label for="city">City</label>
-    <select id="city" required disabled></select>
-    
-    <!-- <input type="hidden" name="country" id="hidden-country"> -->
-    <!-- <input type="hidden" name="city" id="hidden-city"> -->
-
-
-    <div class="form-group">
-        <label>{{ form.interests.label }} {{ form.interests() }}</label>
-    </div>
-
-    <div class="form-group">
-        <label>{{ form.about.label }} {{ form.about() }}</label>
-    </div>
-
-    <div class="form-group">
-        <label>{{ form.photo.label }} {{ form.photo(id='photo') }}</label>
-        <img id="photo-preview" class="preview-img" style="display:none;">
-    </div>
-
-    <button type="submit" class="submit-btn">Submit</button>
-</form>
-<script type="module">
-    import { initGeoLoader } from "/static/js/geo-loader.js";
-    initGeoLoader();
-</script>
+<form id="profileForm" method="POST" enctype="multipart/form-data" class="space-y-6 max-w-md mx-auto p-6 bg-white rounded-xl shadow-md">
+        {{ form.hidden_tag() }}
+        
+        <div>
+            {{ form.name.label(class="block text-sm font-medium text-gray-700") }}
+            {{ form.name(class="mt-1 block w-full rounded-md border-gray-300 shadow-sm") }}
+        </div>
+        
+        <div>
+            {{ form.gender.label(class="block text-sm font-medium text-gray-700") }}
+            {{ form.gender(class="mt-1 block w-full rounded-md border-gray-300 shadow-sm") }}
+        </div>
+        
+        <div>
+            {{ form.birthdate.label(class="block text-sm font-medium text-gray-700") }}
+            {{ form.birthdate(class="mt-1 block w-full rounded-md border-gray-300 shadow-sm") }}
+        </div>
+        
+        <div>
+            <label for="country" class="block text-sm font-medium text-gray-700">Country</label>
+            <select id="country" name="country" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
+                <option value="">Select a country</option>
+            </select>
+        </div>
+        
+        <div>
+            <label for="city" class="block text-sm font-medium text-gray-700">City</label>
+            <select id="city" name="city" disabled class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
+                <option value="">Select a city</option>
+            </select>
+        </div>
+        
+        <div>
+            {{ form.interests.label(class="block text-sm font-medium text-gray-700") }}
+            {{ form.interests(class="mt-1 block w-full rounded-md border-gray-300 shadow-sm") }}
+        </div>
+        
+        <div>
+            {{ form.about.label(class="block text-sm font-medium text-gray-700") }}
+            {{ form.about(class="mt-1 block w-full rounded-md border-gray-300 shadow-sm") }}
+        </div>
+        
+        <div>
+            {{ form.photo.label(class="block text-sm font-medium text-gray-700") }}
+            {{ form.photo(class="mt-1 block w-full text-sm text-gray-500") }}
+            <img id="photo-preview" style="display:none; width: 100px; height: auto;" class="mt-2 rounded" />
+        </div>
+        
+        <div>
+            {{ form.submit(class="w-full py-2 px-4 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-md shadow") }}
+        </div>
+        </form>
