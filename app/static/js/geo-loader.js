@@ -13,13 +13,19 @@ function server_log(message) {
 
 // document.addEventListener('DOMContentLoaded', () => {
 export function initGeoLoader() {
-    console.log("initGeoLoader: countrySelect:", document.getElementById('country'));
 
     const countrySelect = document.getElementById('country');
     const citySelect = document.getElementById('city');
     const photoInput = document.getElementById('photo');
     const preview = document.getElementById('photo-preview');
 
+    console.log("initGeoLoader: countrySelect:", document.getElementById('country'));
+    console.log("countrySelect value:", countrySelect);
+    console.log("countrySelect.TEXT_NODE value:", countrySelect.TEXT_NODE);
+
+
+
+    server_log(`countrySelect element: ${countrySelect}`)
 
     fetch('/geo/countries')
         .then(res => res.json())

@@ -28,8 +28,6 @@ def index():
     user_id = session.get('user_id')
     current_app.logger.info("Index Route. User_Id: %s", user_id)
 
-    #  for desktop debug
-    user_id = '5070300052'
     if user_id:
         try:
             user_data = get_user_by_telegram_id(user_id)
@@ -86,6 +84,10 @@ def auth():
 
     user_data = json.loads(user_data_json)
     telegram_id = user_data.get("id")
+
+
+    #  for desktop debug
+    telegram_id = '5070300052'
 
     if telegram_id:
         session["user_id"] = telegram_id
