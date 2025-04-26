@@ -91,6 +91,20 @@ async function loadPage(url) {
     }
 }
 
+function waitForElement(selector, timeout = 2000) {
+    return new Promise((resolve, reject) => {
+        const start = Date.now();
+        const check = () => {
+            const el = document.querySelector(selector);
+            if (el) return resolve(el);
+            if (Date.now() - start > timeout) return reject("Timeout waiting for " + selector);
+            requestAnimationFrame(check);
+        };
+        check();
+    });
+}
+
+
 // Навигация по ссылке
 async function navigateTo(url) {
     if (url !== currentPath) {
@@ -106,13 +120,17 @@ async function navigateTo(url) {
 
             import("/static/js/geo-loader.js").then(({ initGeoLoader }) => {
                 // setTimeout(() => initGeoLoader(), 10);
-                setTimeout(() => {
-                    if (document.getElementById("country")) {
-                        initGeoLoader();
-                    } else {
-                        console.warn("Элемент country не найден при initGeoLoader");
-                    }
-                }, 10);
+                // setTimeout(() => {
+                //     if (document.getElementById("country")) {
+                //         initGeoLoader();
+                //     } else {
+                //         console.warn("Элемент country не найден при initGeoLoader");
+                //     }
+                // }, 10);
+                waitForElement("#country")
+                    .then(() => initGeoLoader())
+                    .catch(err => console.warn(err));
+
             }).catch(err => {
                 console.error("Failed to load geo-loader:", err);
             });
