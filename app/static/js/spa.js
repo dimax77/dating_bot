@@ -180,12 +180,6 @@ document.addEventListener("DOMContentLoaded", () => {
         const form = e.target;
         if (form.id === "profileForm") {
             e.preventDefault();
-            // selectedCountry = document.getElementById('country').value
-            // selectedCity = document.getElementById('city').value
-            // console.log("Selected country: ", selectedCountry)
-            // console.log("Selected city: ", selectedCity)
-            // document.getElementById('hidden-country').value = selectedCountry;
-            // document.getElementById('hidden-city').value = selectedCity;
 
             const formData = new FormData(form);
 
@@ -199,6 +193,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 });
 
                 const html = await response.text();
+                
                 const parser = new DOMParser();
                 const doc = parser.parseFromString(html, "text/html");
                 const newContent = doc.querySelector("main");
