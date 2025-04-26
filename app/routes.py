@@ -123,7 +123,7 @@ def create_profile():
         }
 
         try:
-            create_user_profile(telegram_id, form_data, filename)
+            create_user_profile(form_data, telegram_id, filename)
             flash("Profile created successfully!", "success")
             # return redirect(url_for('main.index'))
             return jsonify({'ok': "ok"})
