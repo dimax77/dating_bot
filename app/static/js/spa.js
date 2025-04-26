@@ -130,6 +130,7 @@ async function navigateTo(url) {
                 waitForElement("#country")
                     .then(() => initGeoLoader())
                     .catch(err => console.warn(err));
+                setupProfileFormListener()
 
             }).catch(err => {
                 console.error("Failed to load geo-loader:", err);
@@ -175,6 +176,62 @@ document.addEventListener("DOMContentLoaded", () => {
         updateBackButton();
     });
 
+    function setupProfileFormListener() {
+        const form = document.getElementById("profileForm");
+
+        if (!form) {
+            console.warn("⚠️ Profile form not found on the page.");
+            return;
+        }
+
+        form.addEventListener("submit", async (e) => {
+            e.preventDefault();
+
+            const formData = new FormData(form);
+
+            console.log("📤 Submitting profile form...");
+            formData.forEach((value, key) => {
+                console.log(`Form field: ${key} = ${value}`);
+            });
+
+            try {
+                const response = await fetch("/create_profile", {
+                    method: "POST",
+                    body: formData,
+                });
+
+                if (!response.ok) {
+                    console.error("❌ Server returned error status:", response.status);
+                    const errorText = await response.text();
+                    console.error(errorText);
+                    return;
+                }
+
+                const html = await response.text();
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(html, "text/html");
+                const newContent = doc.querySelector("main");
+
+                const main = document.querySelector("main");
+                if (main && newContent) {
+                    main.innerHTML = newContent.innerHTML;
+                    console.log("✅ Profile form submitted successfully. Content updated.");
+
+                    // Меняем URL и сбрасываем прокрутку
+                    const url = "/";
+                    history.pushState(null, null, url);
+                    window.scrollTo(0, 0);
+
+                    // Переинициализируем форму (если она снова нужна на новой странице)
+                    setupProfileFormListener();
+                } else {
+                    console.warn("⚠️ Main container not found after form submit.");
+                }
+            } catch (err) {
+                console.error("⚡ Ошибка при отправке формы профиля:", err);
+            }
+        });
+    }
     // Обработка отправки формы профиля
     document.addEventListener("submit", async (e) => {
         const form = e.target;
@@ -184,7 +241,10 @@ document.addEventListener("DOMContentLoaded", () => {
             const formData = new FormData(form);
 
             server_log("Submit proccessing..")
-            server_log(`Form data: ${formData.JSON}`)
+            server_log("Form data:");
+            formData.forEach((value, key) => {
+                server_log(`${key}: ${value}`);
+            });
 
             try {
                 const response = await fetch("/create_profile", {
@@ -193,7 +253,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 });
 
                 const html = await response.text();
-                
+
                 const parser = new DOMParser();
                 const doc = parser.parseFromString(html, "text/html");
                 const newContent = doc.querySelector("main");
