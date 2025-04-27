@@ -31,9 +31,10 @@ def index():
     if user_id:
         try:
             user_data = get_user_by_telegram_id(user_id)
+            current_app.logger.info("Found user: %s", user_data)
             if user_data:
                 user = dict(user_data)
-                unread_count = get_unread_messages_count(user_id)
+                unread_count = get_unread_messages_count(user_data.id)
             else:
                 # If user doesn't exist, clear session and redirect
                 # session.clear()  # Remove all session data
