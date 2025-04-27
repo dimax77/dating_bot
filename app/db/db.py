@@ -62,7 +62,7 @@ def get_user_chats(user_id):
         chats = cur.fetchall()
         current_app.logger.info("Found %s user's dialogs", len(chats))
         for chat in chats:
-            current_app.logger.info("Chat: %s", chat)
+            current_app.logger.info("Chat: %s", dict(chat))
     return [dict(row) for row in chats]
 
 from datetime import datetime
