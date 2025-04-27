@@ -79,12 +79,17 @@ def create_user_profile(form_data, telegram_id, filename=None):
             return {"success": True, "message": "User profile created successfully."}
     except sqlite3.IntegrityError as e:
         # Например, если у тебя ограничение UNIQUE на telegram_id
+        current_app.logger.info("Error adding user to DB: %s", e)
         return {"success": False, "error": f"Integrity error: {e}"}
     except sqlite3.OperationalError as e:
         # Ошибки типа "нет такой таблицы" или неправильный SQL синтаксис
+        current_app.logger.info("Error adding user to DB: %s", e)
+
         return {"success": False, "error": f"Operational error: {e}"}
     except Exception as e:
         # Ловим все остальные ошибки
+        current_app.logger.info("Error adding user to DB: %s", e)
+
         return {"success": False, "error": f"Unexpected error: {e}"}
     
 def update_user_profile(telegram_id, form_data, filename=None):
