@@ -40,6 +40,28 @@ def get_unread_messages_count(user_id):
         current_app.logger.info("Unread count for %s: %s", user_id, count)
     return count
 
+def get_user_chats(user_id):
+    """Получить список чатов с последними сообщениями и количеством непрочитанных."""
+    query = '''
+        SELECT 
+            u.id AS user_id,
+            u.name AS user_name,
+            MAX(m.timestamp) AS last_message_time,
+            SUM(CASE WHEN m.receiver_id = ? AND m.read = 0 THEN 1 ELSE 0 END) AS unread_count
+        FROM messages m
+        JOIN users u ON 
+            (u.id = m.sender_id AND m.sender_id != ?) OR
+            (u.id = m.receiver_id AND m.receiver_id != ?)
+        WHERE m.sender_id = ? OR m.receiver_id = ?
+        GROUP BY user_id, user_name
+        ORDER BY unread_count DESC, last_message_time DESC
+    '''
+    with get_db_connection() as conn:
+        cur = conn.cursor()
+        cur.execute(query, (user_id, user_id, user_id, user_id, user_id))
+        chats = cur.fetchall()
+    return [dict(row) for row in chats]
+
 from datetime import datetime
 def calculate_age(birthdate):
     today = datetime.today()

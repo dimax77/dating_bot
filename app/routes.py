@@ -8,7 +8,7 @@ import os
 import urllib
 import sqlite3
 from app.db.db import get_user_by_telegram_id, get_unread_messages_count, create_user_profile, update_user_profile, delete_user_profile
-from app.db.db import search_profiles_by_filters, get_all_profiles
+from app.db.db import search_profiles_by_filters, get_all_profiles, get_user_chats
 from werkzeug.utils import secure_filename
 
 DB_PATH = 'data/dating_bot.db'
@@ -267,15 +267,16 @@ def view_profile(user_id):
     return render_template('base.html', content_template='fragments/profile.html', profile=profile)
 
 
+
 @main.route('/chats')
 def chats():
-    # Заглушка — позже можно будет реализовать логику извлечения уникальных собеседников
-    sample_chats = [
-        {"user_id": 1, "user_name": "Анна"},
-        {"user_id": 2, "user_name": "Игорь"},
-    ]
-    return render_template('base.html', content_template='fragments/chats.html', chats=sample_chats)
+    my_id = session.get('user_id')
+    if not my_id:
+        flash("Пожалуйста, войдите в систему", "warning")
+        return redirect(url_for('main.index'))
 
+    chats = get_user_chats(my_id)
+    return render_template('base.html', content_template='fragments/chats.html', chats=chats)
 
 @main.route('/dialog/<int:user_id>', methods=['GET', 'POST'])
 def dialog(user_id):
