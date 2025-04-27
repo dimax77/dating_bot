@@ -3,7 +3,7 @@
 
 <a href="/edit_profile" class="button" data-link>Редактировать анкету</a>
 <a href="/search" class="button" data-link>🔍 Поиск анкет</a>
-<a href="/chats" data-link>💬 Сообщения <span class="badge">{{ user.unread_count or 0 }}</span></a>
+<a href="/chats" data-link>💬 Сообщения <span class="badge">{{ unread_count or 0 }}</span></a>
 
 
 <div class="close-btn" onclick="Telegram.WebApp.close()">Закрыть мини-приложение</div>
