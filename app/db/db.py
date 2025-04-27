@@ -90,12 +90,16 @@ def update_user_profile(telegram_id, form_data, filename=None):
     SET name = ?, gender = ?, birthdate = ?, country = ?, city = ?, interests = ?, about = ?, photo = ?
     WHERE telegram_id = ?
     '''
+
+    birthdate = datetime.strptime(form_data['birthdate'], '%Y-%m-%d')  # Преобразует строку в объект datetime
+
     with get_db_connection() as conn:
         cur = conn.cursor()
         cur.execute(query, (
             form_data['name'],
             form_data['gender'],
-            form_data['birthdate'].strftime('%Y-%m-%d'),
+            # form_data['birthdate'].strftime('%Y-%m-%d'),
+            birthdate,
             form_data['country'],
             form_data['city'],
             form_data['interests'],
