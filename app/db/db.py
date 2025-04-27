@@ -2,6 +2,8 @@
 
 import sqlite3
 from contextlib import contextmanager
+from flask import current_app
+
 
 DB_PATH = 'data/dating_bot.db'
 
@@ -9,6 +11,7 @@ DB_PATH = 'data/dating_bot.db'
 def get_db_connection():
     """Контекстный менеджер для работы с базой данных."""
     conn = sqlite3.connect(DB_PATH)
+    current_app.logger.info("DB connection established: %s", conn)
     conn.row_factory = sqlite3.Row  # Чтобы результат был как словарь
     try:
         yield conn
@@ -59,6 +62,8 @@ def create_user_profile(form_data, telegram_id, filename=None):
     try:
         with get_db_connection() as conn:
             cur = conn.cursor()
+            current_app.logger.info("Trying insert data: %s", form_data)
+
             cur.execute(query, (
                 form_data['name'],
                 form_data['gender'],

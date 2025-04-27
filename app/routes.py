@@ -106,8 +106,8 @@ def create_profile():
 
     if request.method == 'POST' and form.validate_on_submit():
         filename = None
-        print(form.errors)
-        current_app.logger.info("Processing POST request on /create_account for user: %s", form.name)
+        # print(form.errors)
+        current_app.logger.info("Processing POST request on /create_account for user: %s", form.name.data)
 
         if form.photo.data:
             os.makedirs(UPLOAD_FOLDER, exist_ok=True)
@@ -128,8 +128,8 @@ def create_profile():
         try:
             create_user_profile(form_data, telegram_id, filename)
             flash("Profile created successfully!", "success")
-            # return redirect(url_for('main.index'))
-            return jsonify({'ok': "ok"})
+            return redirect(url_for('main.index'))
+            # return jsonify({'ok': "ok"})
         except Exception as e:
             flash(f"Error creating profile: {e}", "danger")
             return redirect(url_for('main.create_profile'))
