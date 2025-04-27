@@ -130,7 +130,7 @@ async function navigateTo(url) {
                 waitForElement("#country")
                     .then(() => initGeoLoader())
                     .catch(err => console.warn(err));
-                setupProfileFormListener()
+                // setupProfileFormListener()
 
             }).catch(err => {
                 console.error("Failed to load geo-loader:", err);
@@ -242,8 +242,7 @@ function setupProfileFormListener() {
         try {
             const response = await fetch("/create_profile", {
                 method: "POST",
-                body: formData,
-                headers: {}
+                body: formData
             });
 
             if (!response.ok) {
@@ -253,7 +252,7 @@ function setupProfileFormListener() {
                 return;
             }
 
-            const html = await response.text();
+            const html = await response.json();
             const parser = new DOMParser();
             const doc = parser.parseFromString(html, "text/html");
             const newContent = doc.querySelector("main");
