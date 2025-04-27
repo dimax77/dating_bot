@@ -117,8 +117,8 @@ def create_profile():
         form_data = {
             'name': form.name.data,
             'gender': form.gender.data,
-            # 'birthdate': form.birthdate.data,
-            'birthdate': form.birthdate.data.strftime('%Y-%m-%d'),
+            'birthdate': form.birthdate.data,
+            # 'birthdate': form.birthdate.data.strftime('%Y-%m-%d'),
             'country': form.country.data,
             'city': form.city.data,
             'interests': form.interests.data,
