@@ -37,6 +37,7 @@ def get_unread_messages_count(user_id):
         cur = conn.cursor()
         cur.execute(query, (user_id,))
         count = cur.fetchone()[0]
+        current_app.logger.info("Unread count for %s: %s", user_id, count)
     return count
 
 from datetime import datetime
