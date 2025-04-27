@@ -115,7 +115,8 @@ async function navigateTo(url) {
         currentPath = url;
         history.pushState(null, null, url);
 
-        if (window.location.pathname.startsWith("/create_profile")) {
+        if (window.location.pathname.startsWith("/create_profile") ||
+            window.location.pathname.startsWith("/search")) {
             console.log("GOT YA! Window.LocationPathname: ", window.location.pathname)
 
             import("/static/js/geo-loader.js").then(({ initGeoLoader }) => {
@@ -176,7 +177,7 @@ document.addEventListener("DOMContentLoaded", () => {
         updateBackButton();
     });
 
-  
+
     // // Обработка отправки формы профиля
     // document.addEventListener("submit", async (e) => {
     //     const form = e.target;
