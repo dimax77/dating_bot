@@ -59,7 +59,7 @@ def create_user_profile(form_data, telegram_id, filename=None):
             # birthdate = datetime.strptime(form_data['birthdate'], '%Y-%m-%d')  # Преобразует строку в объект datetime
             birthdate = form_data['birthdate']
             age = calculate_age(birthdate)
-
+            current_app.logger.info("Calculated age for user: %s", age)
 
             cur.execute(query, (
                 form_data['name'],
