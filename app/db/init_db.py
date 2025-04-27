@@ -24,7 +24,8 @@ def init_db():
         interests TEXT,
         about TEXT,
         photo TEXT,
-        telegram_id TEXT
+        telegram_id TEXT,
+        age INTEGER
     )
     ''')
 

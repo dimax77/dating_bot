@@ -40,6 +40,11 @@ def get_unread_messages_count(user_id):
     return count
 
 from datetime import datetime
+def calculate_age(birthdate):
+    today = datetime.today()
+    age = today.year - birthdate.year - ((today.month, today.day) < (birthdate.month, birthdate.day))
+    return age
+
 def create_user_profile(form_data, telegram_id, filename=None):
     """Create a new user profile in the database."""
     query = '''
@@ -52,6 +57,7 @@ def create_user_profile(form_data, telegram_id, filename=None):
             cur = conn.cursor()
             current_app.logger.info("Trying insert data: %s", form_data)
             birthdate = datetime.strptime(form_data['birthdate'], '%Y-%m-%d')  # Преобразует строку в объект datetime
+            age = calculate_age(birthdate)
 
 
             cur.execute(query, (
@@ -64,7 +70,8 @@ def create_user_profile(form_data, telegram_id, filename=None):
                 form_data['interests'],
                 form_data['about'],
                 filename,
-                telegram_id
+                telegram_id,
+                age
             ))
             conn.commit()
             return {"success": True, "message": "User profile created successfully."}
