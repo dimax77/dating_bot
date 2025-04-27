@@ -31,7 +31,7 @@ def get_unread_messages_count(user_id):
     """Получить количество непрочитанных сообщений для пользователя."""
     query = '''
     SELECT COUNT(*) FROM messages
-    WHERE receiver_id = ? AND read IS NULL
+    WHERE receiver_id = ? AND read = 0
     '''
     with get_db_connection() as conn:
         cur = conn.cursor()
