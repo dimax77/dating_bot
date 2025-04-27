@@ -99,6 +99,8 @@ def create_profile():
     if not telegram_id:
         flash("Please log in to create a profile", "warning")
         return redirect(url_for('main.index'))
+    
+    current_app.logger.info("📦 Form data received: %s", request.form.to_dict(flat=False))
 
     form = ProfileForm()
 

@@ -243,6 +243,7 @@ function setupProfileFormListener() {
             const response = await fetch("/create_profile", {
                 method: "POST",
                 body: formData,
+                headers: {}
             });
 
             if (!response.ok) {
