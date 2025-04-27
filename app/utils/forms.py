@@ -11,8 +11,6 @@ class ProfileForm(FlaskForm):
     country = StringField('Country', validators=[DataRequired()])
     city = StringField('City', validators=[DataRequired()])
 
-    # country = HiddenField('Country', validators=[DataRequired()])
-    # city = HiddenField('City', validators=[DataRequired()])
     interests = TextAreaField('Interests')
     about = TextAreaField('About')
     photo = FileField('Upload your photo')
