@@ -58,7 +58,7 @@ def index():
                            content_template="fragments/intro.html",
                            body_class="welcome")
 
-@main.route("/error_log", methods=["POST"])
+@main.route("/server_log", methods=["POST"])
 def error_log():
     data = request.get_json()
     error_message = data.get("message", "No message")
@@ -102,9 +102,10 @@ def create_profile():
 
     form = ProfileForm()
 
-    if form.validate_on_submit():
+    if request.method == 'POST' and form.validate_on_submit():
         filename = None
         print(form.errors)
+        current_app.logger.info("Processing POST request on /create_account for user: %s", form.name)
 
         if form.photo.data:
             os.makedirs(UPLOAD_FOLDER, exist_ok=True)

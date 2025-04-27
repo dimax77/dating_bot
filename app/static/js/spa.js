@@ -35,7 +35,7 @@ if (initData && !sessionStorage.getItem("auth_done")) {
 
 // Server Log 
 function server_log(message) {
-    fetch("/error_log", {
+    fetch("/server_log", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ message: `${message}` })
