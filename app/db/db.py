@@ -48,7 +48,7 @@ def calculate_age(birthdate):
 def create_user_profile(form_data, telegram_id, filename=None):
     """Create a new user profile in the database."""
     query = '''
-    INSERT INTO users (name, gender, birthdate, country, city, interests, about, photo, telegram_id)
+    INSERT INTO users (name, gender, birthdate, country, city, interests, about, photo, telegram_id, age)
     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     '''
 
