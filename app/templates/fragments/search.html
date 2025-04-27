@@ -1,98 +1,42 @@
 <!-- app/templates/fragments/search.html -->
 <div class="container">
     <h2>Поиск анкет</h2>
-    <form method="get" action="/search">
-        <!-- Country Dropdown -->
-        <label for="country">Страна:
-            <select id="country" name="country" required>
-                <option value="">Выберите страну</option>
-                <!-- Country options will be loaded dynamically -->
+    <form method="get" action="/search" class="search-form">
+        <!-- Страна -->
+        <label>Страна:
+            <select id="country" name="country">
+                <option value="">Любая</option>
             </select>
         </label>
 
-        <!-- City Dropdown -->
-        <label for="city">Город:
-            <select id="city" name="city" required disabled>
-                <option value="">Выберите город</option>
-                <!-- City options will be loaded dynamically based on country -->
+        <!-- Город -->
+        <label>Город:
+            <select id="city" name="city" disabled>
+                <option value="">Любой</option>
             </select>
         </label>
 
-        <!-- Gender Dropdown -->
-        <label for="gender">Пол:
+        <!-- Пол -->
+        <label>Пол:
             <select name="gender">
-                <option value="">Не важно</option>
+                <option value="">Любой</option>
                 <option value="male">Мужской</option>
                 <option value="female">Женский</option>
             </select>
         </label>
 
-        <!-- Age Range Dropdowns -->
-        <label for="min_age">Возраст от:
-            <select name="min_age">
-                <option value="18" selected>18</option>
-                <option value="20">19</option>
-                <option value="20">20</option>
-                <option value="20">21</option>
-                <option value="20">22</option>
-                <option value="20">23</option>
-                <option value="20">24</option>
-                <option value="20">25</option>
-                <option value="20">26</option>
-                <option value="20">27</option>
-                <option value="20">28</option>
-                <option value="20">29</option>
-                <option value="25">30</option>
-                <option value="30">31</option>
-                <option value="35">32</option>
-                <option value="35">33</option>
-                <option value="35">34</option>
-                <option value="35">35</option>
-                <option value="35">36</option>
-                <option value="35">37</option>
-                <option value="35">38</option>
-                <option value="35">39</option>
-                <option value="35">40</option>
-                <option value="40">41</option>
-            </select>
+        <!-- Возраст -->
+        <label>Возраст от:
+            <input type="number" name="min_age" min="18" max="80" value="{{ request.args.get('min_age', 18) }}">
         </label>
 
-        <label for="max_age">Возраст до:
-            <select name="max_age">
-                <option value="30" selected>30</option>
-                <option value="35">31</option>
-                <option value="35">32</option>
-                <option value="35">33</option>
-                <option value="35">34</option>
-                <option value="35">35</option>
-                <option value="35">36</option>
-                <option value="35">37</option>
-                <option value="35">38</option>
-                <option value="35">39</option>
-                <option value="35">40</option>
-                <option value="40">41</option>
-                <option value="45">42</option>
-                <option value="50">43</option>
-                <option value="60">44</option>
-            </select>
+        <label>Возраст до:
+            <input type="number" name="max_age" min="18" max="80" value="{{ request.args.get('max_age', 30) }}">
         </label>
 
         <button type="submit">🔍 Найти</button>
     </form>
 
-    <div id="search-results">
-        {% for profile in profiles %}
-        <div class="card">
-            <p><strong>{{ profile.name }}</strong> ({{ profile.age }})</p>
-            <p>{{ profile.city }}</p>
-            <p>{{ profile.about }}</p>
-            {% if profile.photo %}
-            <img src="/static/uploads/{{ profile.photo }}" class="preview-img" />
-            {% endif %}
-            <a href="/dialog/{{ profile.id }}" data-link>💬 Написать</a>
-        </div>
-        {% endfor %}
-    </div>
     <div class="profile-cards">
         {% for profile in profiles %}
         <div class="profile-card">
@@ -100,12 +44,14 @@
             <div class="profile-info">
                 <h3>{{ profile.name }}, {{ profile.age }}</h3>
                 <p>{{ profile.city }}, {{ profile.country }}</p>
-                <p class="profile-about">{{ profile.about|truncate(100) }}</p>
+                <div class="profile-actions">
+                    <a href="/profile/{{ profile.id }}" class="btn btn-view" data-link>Подробнее</a>
+                    <a href="/dialog/{{ profile.id }}" class="btn btn-message" data-link>💬 Написать</a>
+                </div>
             </div>
         </div>
+        {% else %}
+        <p>Ничего не найдено по вашему запросу.</p>
         {% endfor %}
     </div>
-
 </div>
-
-<script src="{{ url_for('static', filename='js/geo-loader.js') }}" defer></script>

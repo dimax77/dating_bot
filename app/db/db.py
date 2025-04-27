@@ -164,9 +164,39 @@ def calculate_birthdate_range(min_age, max_age):
     min_birthdate = today - timedelta(days=int(max_age)*365.25) if max_age else None
     return min_birthdate, max_birthdate
 
+# def search_profiles_by_filters(country, city, gender, min_age, max_age):
+#     """Search for user profiles based on filters."""
+#     query = "SELECT *, CAST((julianday('now') - julianday(birthdate)) / 365.25 AS INTEGER) AS age FROM users WHERE 1=1"
+#     params = []
+
+#     if country:
+#         query += " AND country LIKE ?"
+#         params.append(f"%{country}%")
+
+#     if city:
+#         query += " AND city LIKE ?"
+#         params.append(f"%{city}%")
+
+#     if gender:
+#         query += " AND gender = ?"
+#         params.append(gender)
+
+#     if min_age:
+#         query += " AND CAST((julianday('now') - julianday(birthdate)) / 365.25 AS INTEGER) >= ?"
+#         params.append(int(min_age))
+
+#     if max_age:
+#         query += " AND CAST((julianday('now') - julianday(birthdate)) / 365.25 AS INTEGER) <= ?"
+#         params.append(int(max_age))
+
+#     with get_db_connection() as conn:
+#         cur = conn.cursor()
+#         cur.execute(query, tuple(params))
+#         rows = cur.fetchall()
+#     return rows
+
 def search_profiles_by_filters(country, city, gender, min_age, max_age):
-    """Search for user profiles based on filters."""
-    query = "SELECT *, CAST((julianday('now') - julianday(birthdate)) / 365.25 AS INTEGER) AS age FROM users WHERE 1=1"
+    query = "SELECT * FROM users WHERE 1=1"
     params = []
 
     if country:
@@ -182,18 +212,19 @@ def search_profiles_by_filters(country, city, gender, min_age, max_age):
         params.append(gender)
 
     if min_age:
-        query += " AND CAST((julianday('now') - julianday(birthdate)) / 365.25 AS INTEGER) >= ?"
-        params.append(int(min_age))
+        query += " AND age >= ?"
+        params.append(min_age)
 
     if max_age:
-        query += " AND CAST((julianday('now') - julianday(birthdate)) / 365.25 AS INTEGER) <= ?"
-        params.append(int(max_age))
+        query += " AND age <= ?"
+        params.append(max_age)
 
     with get_db_connection() as conn:
         cur = conn.cursor()
         cur.execute(query, tuple(params))
         rows = cur.fetchall()
     return rows
+
 
 
 def get_all_profiles():

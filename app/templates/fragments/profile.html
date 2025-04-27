@@ -1,0 +1,13 @@
+<!-- app/templates/fragments/profile.html -->
+<div class="container">
+    <div class="profile-view">
+        <img src="{{ profile.photo_url }}" alt="Фото {{ profile.name }}">
+        <h2>{{ profile.name }}, {{ profile.age }}</h2>
+        <p><strong>Страна:</strong> {{ profile.country }}</p>
+        <p><strong>Город:</strong> {{ profile.city }}</p>
+        <p><strong>Интересы:</strong> {{ profile.interests }}</p>
+        <p><strong>О себе:</strong> {{ profile.about }}</p>
+
+        <a href="/dialog/{{ profile.id }}" class="btn btn-message">💬 Написать сообщение</a>
+    </div>
+</div>

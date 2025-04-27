@@ -204,6 +204,25 @@ def delete_profile():
         return redirect(url_for('main.index'))
 
 
+# @main.route('/search')
+# def search_profiles():
+#     # Get search parameters
+#     country = request.args.get('country', '').strip()
+#     city = request.args.get('city', '').strip()
+#     gender = request.args.get('gender', '').strip()
+#     min_age = request.args.get('min_age', type=int, default=18)
+#     max_age = request.args.get('max_age', type=int, default=30)
+
+#     # Use the search function with the provided filters
+#     if country or city or gender or min_age or max_age:
+#         rows = search_profiles_by_filters(country, city, gender, min_age, max_age)
+#     else:
+#         rows = get_all_profiles()
+
+#     profiles = [dict(zip(['id', 'name', 'age', 'city', 'country', 'gender', 'interests', 'about', 'photo', 'telegram_id'], row)) for row in rows]
+
+#     return render_template('base.html', content_template='fragments/search.html', profiles=profiles)
+
 @main.route('/search')
 def search_profiles():
     # Get search parameters
@@ -213,15 +232,38 @@ def search_profiles():
     min_age = request.args.get('min_age', type=int, default=18)
     max_age = request.args.get('max_age', type=int, default=30)
 
-    # Use the search function with the provided filters
+    # Use filters or show all
     if country or city or gender or min_age or max_age:
         rows = search_profiles_by_filters(country, city, gender, min_age, max_age)
     else:
         rows = get_all_profiles()
 
-    profiles = [dict(zip(['id', 'name', 'age', 'city', 'country', 'gender', 'interests', 'about', 'photo', 'telegram_id'], row)) for row in rows]
+    profiles = []
+    for row in rows:
+        profile = dict(zip(['id', 'name', 'birthdate', 'country', 'city', 'interests', 'about', 'photo', 'telegram_id', 'age'], row))
+        
+        profile['photo_url'] = f"/static/uploads/{profile['photo']}" if profile['photo'] else "/static/img/no-photo.png"
+        
+        profiles.append(profile)
 
     return render_template('base.html', content_template='fragments/search.html', profiles=profiles)
+
+from app.db.db import get_db_connection
+
+@main.route('/profile/<int:user_id>')
+def view_profile(user_id):
+    with get_db_connection() as conn:
+        cur = conn.cursor()
+        cur.execute("SELECT * FROM users WHERE id = ?", (user_id,))
+        row = cur.fetchone()
+
+    if not row:
+        return "Профиль не найден", 404
+
+    profile = dict(zip(['id', 'name', 'birthdate', 'country', 'city', 'interests', 'about', 'photo', 'telegram_id', 'age'], row))
+    profile['photo_url'] = f"/static/uploads/{profile['photo']}" if profile['photo'] else "/static/img/no-photo.png"
+
+    return render_template('base.html', content_template='fragments/profile.html', profile=profile)
 
 
 @main.route('/chats')
