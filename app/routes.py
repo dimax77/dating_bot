@@ -25,12 +25,13 @@ import json
 def index():
     user = None
     unread_count = 0
-    user_id = session.get('user_id')
-    current_app.logger.info("Index Route. User_Id: %s", user_id)
+    # user_id = session.get('user_id')
+    telegram_id = session.get('telegram_id')
+    current_app.logger.info("Index Route. telegram_id: %s", telegram_id)
 
-    if user_id:
+    if telegram_id:
         try:
-            user_data = get_user_by_telegram_id(user_id)
+            user_data = get_user_by_telegram_id(telegram_id)
             if user_data:
                 user = dict(user_data)
                 current_app.logger.info("Found user: %s", user)
@@ -88,7 +89,9 @@ def auth():
 
 
     if telegram_id:
-        session["user_id"] = telegram_id
+        # session["user_id"] = telegram_id
+        session["telegram_id"] = telegram_id
+
         session.modified = True
         return jsonify({"status": "ok"})
     else:
@@ -96,7 +99,7 @@ def auth():
 
 @main.route('/create_profile', methods=['GET', 'POST'])
 def create_profile():
-    telegram_id = session.get('user_id')
+    telegram_id = session.get('telegram_id')
     if not telegram_id:
         flash("Please log in to create a profile", "warning")
         return redirect(url_for('main.index'))
@@ -126,13 +129,14 @@ def create_profile():
             'about': form.about.data
         }
 
-        try:
-            create_user_profile(form_data, telegram_id, filename)
+        result = create_user_profile(form_data, telegram_id, filename)
+        if result.get('success'):
+            session['user_id'] = result.get('user_id')
             flash("Profile created successfully!", "success")
             return redirect(url_for('main.index'))
             # return jsonify({'ok': "ok"})
-        except Exception as e:
-            flash(f"Error creating profile: {e}", "danger")
+        else:
+            flash(f"Error creating profile: {result.get('error')}", "danger")
             return redirect(url_for('main.create_profile'))
 
     return render_template('base.html', content_template='fragments/create_profile.html', form=form)

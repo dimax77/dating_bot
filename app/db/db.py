@@ -44,9 +44,11 @@ def get_user_chats(user_id):
     """Получить список чатов с последними сообщениями и количеством непрочитанных."""
     query = '''
         SELECT 
-            *
+            u.name as opponent_name, u.id as opponent_id, count(*), MAX() as last_msg_time, .. as last_msg
         FROM messages m
-      
+        JOIN users u ON u.id = CASE WHEN m.sender_id =: user_id THEN m.receiver_id ELSE m.sender_id END
+        WHERE m.sender_id =: user_id OR m.receiver_id =: user_id
+        GROUP BY opponent_name
     '''
     with get_db_connection() as conn:
         cur = conn.cursor()
@@ -93,7 +95,8 @@ def create_user_profile(form_data, telegram_id, filename=None):
                 age
             ))
             conn.commit()
-            return {"success": True, "message": "User profile created successfully."}
+            new_user_id = cur.lastrowid
+            return {"success": True, "user_id": new_user_id}
     except sqlite3.IntegrityError as e:
         # Например, если у тебя ограничение UNIQUE на telegram_id
         current_app.logger.info("Error adding user to DB: %s", e)
