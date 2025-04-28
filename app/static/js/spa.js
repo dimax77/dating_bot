@@ -31,7 +31,7 @@ if (initData && !sessionStorage.getItem("auth_done")) {
         server_log(`Auth error: ${err.message}`)
         Telegram.WebApp.showAlert("Не удалось авторизоваться. Попробуйте позже.");
     });
-} else if (!Telegram.WebApp.initDataUnsafe.user) {
+} else  {
     // Если что-то пошло не так — сбрасываем всё!
     sessionStorage.removeItem("auth_done");
     location.reload();
