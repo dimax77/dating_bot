@@ -44,13 +44,7 @@ def get_user_chats(user_id):
     """Получить список чатов с последними сообщениями и количеством непрочитанных."""
     query = '''
         SELECT 
-            CASE
-                WHEN m.sender_id = :user_id THEN m.receiver_id
-                ELSE m.sender_id
-            END AS user_id,
-            u.name AS user_name,
-            COUNT(*) AS message_count,
-            MAX(m.timestamp) AS last_message_time
+            *
         FROM messages m
         JOIN users u ON u.id = CASE
             WHEN m.sender_id = :user_id THEN m.receiver_id
@@ -58,6 +52,7 @@ def get_user_chats(user_id):
         END
         WHERE m.sender_id = :user_id OR m.receiver_id = :user_id
         GROUP BY user_id, user_name
+        ORDER BY last_message_time DESC
     '''
     with get_db_connection() as conn:
         cur = conn.cursor()
