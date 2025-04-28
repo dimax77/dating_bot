@@ -46,7 +46,6 @@ def get_user_chats(user_id):
         SELECT 
             *
         FROM messages m
-        WHERE m.sender_id = :user_id OR m.receiver_id = :user_id
       
     '''
     with get_db_connection() as conn:
