@@ -57,7 +57,7 @@ def get_user_chats(user_id):
             ELSE m.sender_id
         END
         WHERE m.sender_id = :user_id OR m.receiver_id = :user_id
-        GROUP BY user_id, user_name
+        GROUP BY user_name
         ORDER BY last_message_time DESC
     '''
     with get_db_connection() as conn:
