@@ -31,6 +31,10 @@ if (initData && !sessionStorage.getItem("auth_done")) {
         server_log(`Auth error: ${err.message}`)
         Telegram.WebApp.showAlert("Не удалось авторизоваться. Попробуйте позже.");
     });
+} else if (!Telegram.WebApp.initDataUnsafe.user) {
+    // Если что-то пошло не так — сбрасываем всё!
+    sessionStorage.removeItem("auth_done");
+    location.reload();
 }
 
 // Server Log 
@@ -120,14 +124,6 @@ async function navigateTo(url) {
             console.log("GOT YA! Window.LocationPathname: ", window.location.pathname)
 
             import("/static/js/geo-loader.js").then(({ initGeoLoader }) => {
-                // setTimeout(() => initGeoLoader(), 10);
-                // setTimeout(() => {
-                //     if (document.getElementById("country")) {
-                //         initGeoLoader();
-                //     } else {
-                //         console.warn("Элемент country не найден при initGeoLoader");
-                //     }
-                // }, 10);
                 waitForElement("#country")
                     .then(() => initGeoLoader())
                     .catch(err => console.warn(err));
