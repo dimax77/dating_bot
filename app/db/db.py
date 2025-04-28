@@ -46,10 +46,6 @@ def get_user_chats(user_id):
         SELECT 
             *
         FROM messages m
-        JOIN users u ON u.id = CASE
-            WHEN m.sender_id = :user_id THEN m.receiver_id
-            ELSE m.sender_id
-        END
         WHERE m.sender_id = :user_id OR m.receiver_id = :user_id
       
     '''
