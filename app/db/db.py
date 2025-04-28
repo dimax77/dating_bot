@@ -44,14 +44,18 @@ def get_user_chats(user_id):
     """Получить список чатов с последними сообщениями и количеством непрочитанных."""
     query = '''
         SELECT 
-            u.id AS user_id,
+            CASE
+                WHEN m.sender_id = ? THEN m.receiver_id
+                ELSE m.sender_id
+            END AS user_id,
             u.name AS user_name,
             MAX(m.timestamp) AS last_message_time,
             SUM(CASE WHEN m.receiver_id = ? AND m.read = 0 THEN 1 ELSE 0 END) AS unread_count
         FROM messages m
-        JOIN users u ON 
-            (u.id = m.sender_id AND m.sender_id != ?) OR
-            (u.id = m.receiver_id AND m.receiver_id != ?)
+        JOIN users u ON u.id = CASE
+            WHEN m.sender_id = ? THEN m.receiver_id
+            ELSE m.sender_id
+        END
         WHERE m.sender_id = ? OR m.receiver_id = ?
         GROUP BY user_id, user_name
         ORDER BY unread_count DESC, last_message_time DESC
