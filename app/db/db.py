@@ -45,24 +45,24 @@ def get_user_chats(user_id):
     query = '''
         SELECT 
             CASE
-                WHEN m.sender_id = ? THEN m.receiver_id
+                WHEN m.sender_id = :user_id THEN m.receiver_id
                 ELSE m.sender_id
             END AS user_id,
             u.name AS user_name,
-            MAX(m.timestamp) AS last_message_time,
-            SUM(CASE WHEN m.receiver_id = ? AND m.read = 0 THEN 1 ELSE 0 END) AS unread_count
+            COUNT(*) AS message_count,
+            MAX(m.timestamp) AS last_message_time
         FROM messages m
         JOIN users u ON u.id = CASE
-            WHEN m.sender_id = ? THEN m.receiver_id
+            WHEN m.sender_id = :user_id THEN m.receiver_id
             ELSE m.sender_id
         END
-        WHERE m.sender_id = ? OR m.receiver_id = ?
+        WHERE m.sender_id = :user_id OR m.receiver_id = :user_id
         GROUP BY user_id, user_name
-        ORDER BY unread_count DESC, last_message_time DESC
+        ORDER BY last_message_time DESC
     '''
     with get_db_connection() as conn:
         cur = conn.cursor()
-        cur.execute(query, (user_id, user_id, user_id, user_id, user_id))
+        cur.execute(query, {"user_id": user_id})
         chats = cur.fetchall()
         current_app.logger.info("Found %s user's dialogs", len(chats))
         for chat in chats:
