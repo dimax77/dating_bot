@@ -5,7 +5,7 @@
         {% for chat in chats %}
         <li>
             <a href="/dialog/{{ chat.user_id }}" data-link>
-                💬 С {{ chat.user_name }}
+                💬 С {{ chat.user_name }}: {{ chat.message_count }}: {{ chat.last_message_time }}
             </a>
         </li>
         {% endfor %}
