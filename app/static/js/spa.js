@@ -9,6 +9,8 @@ Telegram.WebApp.ready();
 Telegram.WebApp.expand();
 
 const initData = Telegram.WebApp.initData;
+sessionStorage.clear();
+location.reload();
 
 if (initData && !sessionStorage.getItem("auth_done")) {
     fetch("/auth", {
