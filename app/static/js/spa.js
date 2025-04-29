@@ -34,6 +34,7 @@ if (initData && !sessionStorage.getItem("auth_done")) {
 } else  {
     // Если что-то пошло не так — сбрасываем всё!
     sessionStorage.removeItem("auth_done");
+    server_log("Delete previous auth session successfull")
     location.reload();
 }
 
