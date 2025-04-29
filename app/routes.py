@@ -24,7 +24,6 @@ import json
 @main.route('/')
 def index():
 
-    session.clear()
     user = None
     unread_count = 0
     # user_id = session.get('user_id')
