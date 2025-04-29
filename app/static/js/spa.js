@@ -10,8 +10,12 @@ Telegram.WebApp.expand();
 
 const initData = Telegram.WebApp.initData;
 
+server_log(`Init data: ${initData}`)
 
 if (initData && !sessionStorage.getItem("auth_done")) {
+
+    server_log(`Auth was not done.`)
+
     fetch("/auth", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
