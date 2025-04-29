@@ -9,8 +9,7 @@ Telegram.WebApp.ready();
 Telegram.WebApp.expand();
 
 const initData = Telegram.WebApp.initData;
-sessionStorage.clear();
-location.reload();
+
 
 if (initData && !sessionStorage.getItem("auth_done")) {
     fetch("/auth", {
@@ -33,11 +32,6 @@ if (initData && !sessionStorage.getItem("auth_done")) {
         server_log(`Auth error: ${err.message}`)
         Telegram.WebApp.showAlert("Не удалось авторизоваться. Попробуйте позже.");
     });
-} else  {
-    // Если что-то пошло не так — сбрасываем всё!
-    sessionStorage.removeItem("auth_done");
-    server_log("Delete previous auth session successfull")
-    location.reload();
 }
 
 // Server Log 
