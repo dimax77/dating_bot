@@ -57,6 +57,7 @@ def index():
                                unread_count=unread_count,
                                body_class="welcome")
 
+    current_app.logger.info("Returning intro page")
     return render_template('base.html',
                            content_template="fragments/intro.html",
                            body_class="welcome")
