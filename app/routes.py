@@ -13,7 +13,7 @@ from werkzeug.utils import secure_filename
 
 DB_PATH = 'data/dating_bot.db'
 BOT_TOKEN = os.environ.get('BOT_TOKEN')
-current_app.logger.info("BOT TOKEN: %s", BOT_TOKEN)
+# current_app.logger.info("BOT TOKEN: %s", BOT_TOKEN)
 
 # current_app.logger.info("Bot token: %s", BOT_TOKEN)
 
