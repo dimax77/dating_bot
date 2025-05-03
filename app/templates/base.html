@@ -7,36 +7,34 @@
     <title>Dating MiniApp</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/styles.css">
 
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <!-- <script type="module" src="{{ url_for('static', filename='js/spa.js') }}"></script>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}"> -->
-        <script type="module" src="/static/js/spa.js"></script>
-        <link rel="stylesheet" href="/static/css/styles.css">
+    <script type="module" src="/static/js/spa.js"></script>
 
 </head>
 
 <body class="{{ body_class or '' }}">
 
-<main id="content">
+    <main id="content">
 
-    <!-- Flash-сообщения -->
-    {% with messages = get_flashed_messages(with_categories=true) %}
-    {% if messages %}
-    <div class="flashes">
-        {% for category, message in messages %}
-        <div class="alert {{ category }}">{{ message }}</div>
-        {% endfor %}
-    </div>
-    {% endif %}
-    {% endwith %}
+        <!-- Flash-сообщения -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        <div class="flashes">
+            {% for category, message in messages %}
+            <div class="alert {{ category }}">{{ message }}</div>
+            {% endfor %}
+        </div>
+        {% endif %}
+        {% endwith %}
 
-    <!-- Основной контент -->
-    {% include content_template or "fragments/home.html" %}
-</main>
+        <!-- Основной контент -->
+        {% include content_template or "fragments/home.html" %}
+    </main>
 
-<!-- Индикатор загрузки -->
-<div id="loader" style="display:none;">Загрузка...</div>
+    <!-- Индикатор загрузки -->
+    <div id="loader" style="display:none;">Загрузка...</div>
 
 </body>
 
