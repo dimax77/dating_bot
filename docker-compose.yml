@@ -1,7 +1,7 @@
 version: '3.8'
 
 services:
-  web:
+  dating_web:
     build:
       context: .
       dockerfile: Dockerfile
@@ -27,5 +27,5 @@ services:
       - ./app/static:/var/www/app/static:ro
       - /var/www/certbot:/var/www/certbot:ro
     depends_on:
-      - web
+      - dating_web
     restart: unless-stopped
