@@ -25,6 +25,7 @@ services:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
       - /etc/letsencrypt:/etc/letsencrypt:ro
       - ./app/static:/var/www/app/static:ro
+      - ../stock_project/app/static:/var/www/stock_app/static:ro
       - /var/www/certbot:/var/www/certbot:ro
     depends_on:
       - dating_web
